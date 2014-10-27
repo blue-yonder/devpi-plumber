@@ -14,9 +14,9 @@ class DevpiClient(object):
 
     def __enter__(self):
         self._client_dir = tempfile.mkdtemp()
-        self._devpi('use', self._index_url)
+        self.execute('use', self._index_url)
         if self._user and self._password is not None:
-            self._devpi('login', self._user, '--password', self._password)
+            self.execute('login', self._user, '--password', self._password)
         return self
 
     def __exit__(self, *args):
@@ -26,27 +26,16 @@ class DevpiClient(object):
     def index_url(self):
         return self._index_url
 
+    def execute(self, *args, **kwargs):
+        try:
+            return subprocess.check_output(
+                ['devpi'] + list(args)
+                          + ['{}={}'.format(key, value) for key,value in kwargs.iteritems()]
+                          + ['--clientdir={}'.format(self._client_dir)],
+                stderr=subprocess.STDOUT
+            )
+        except subprocess.CalledProcessError as e:
+            raise RuntimeError("Devpi command failed: " + e.output)
 
-    def _devpi(self, *args):
-        return subprocess.check_output(
-            ['devpi'] + list(args) + ['--clientdir={}'.format(self._client_dir)],
-            stderr=subprocess.STDOUT
-        )
-
-    def list_packages(self, package_filter=""):
-        """
-        List packages on the index associated to this client.
-
-        :param package_filter: optional query filter, such as 'mypackage' or 'mypackage>=version'
-        """
-        return self._devpi('list', package_filter)
-
-    def list_indices(self):
-        return [ line.split()[0] for line in self._devpi('use', '-l').splitlines() ]
-
-    def upload(self, file):
-        """
-        Upload the given file to the current index
-        """
-        self._devpi('upload', file)
-
+    def login(self, user, password):
+        return self.execute('login', user, '--password', password)
