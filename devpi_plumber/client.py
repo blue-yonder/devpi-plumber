@@ -5,37 +5,50 @@ import shutil
 
 class DevpiClient(object):
     """
-    Wrapper object around the devpi client exposing features required by devpi_builder.
+    Light wrapper object around the devpi client.
     """
-    def __init__(self, index_url, user=None, password=None):
-        self._index_url = index_url
+    def __init__(self, url, user=None, password=None):
+        self._url = url
         self._user = user
         self._password = password
 
     def __enter__(self):
         self._client_dir = tempfile.mkdtemp()
-        self.execute('use', self._index_url)
+        self.execute('use', self._url)
         if self._user and self._password is not None:
-            self.execute('login', self._user, '--password', self._password)
+            self.login(self._user, self._password)
         return self
 
     def __exit__(self, *args):
         shutil.rmtree(self._client_dir)
 
     @property
-    def index_url(self):
-        return self._index_url
+    def url(self):
+        return self._url
 
     def execute(self, *args, **kwargs):
         try:
             return subprocess.check_output(
                 ['devpi'] + list(args)
-                          + ['{}={}'.format(key, value) for key,value in kwargs.iteritems()]
+                          + ['{}={}'.format(k, v) for k,v in kwargs.iteritems()]
                           + ['--clientdir={}'.format(self._client_dir)],
                 stderr=subprocess.STDOUT
             )
         except subprocess.CalledProcessError as e:
-            raise RuntimeError("Devpi command failed: " + e.output)
+            raise RuntimeError("Devpi command failed: " + e.output + str(e))
+
+    def use(self, *args):
+        return self.execute('use', '/'.join([self._url] + list(args)))
 
     def login(self, user, password):
         return self.execute('login', user, '--password', password)
+
+    def create_user(self, user, *args, **kwargs):
+        return self.execute('user', '--create', user, *args, **kwargs)
+
+    def create_index(self, index, *args, **kwargs):
+        return self.execute('index', '--create', index, *args, **kwargs)
+
+    def upload(self, package, directory=False):
+        args = "--from-dir" if directory else ""
+        return self.execute("upload", args, package)

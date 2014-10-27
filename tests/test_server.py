@@ -1,22 +1,34 @@
 import requests
 from unittest import TestCase
 
-from devpi_plumber.server import devpi_index, devpi_server, devpi_user
+from devpi_plumber.server import TestServer
 
 
 class ServerTest(TestCase):
 
     def test_server_start(self):
-        with devpi_server() as server_url:
-            self.assertEquals(200, requests.get(server_url).status_code)
+        with TestServer() as devpi:
+            self.assertEquals(200, requests.get(devpi.url).status_code)
 
     def test_user_creation(self):
-        with devpi_server() as server_url:
-            with devpi_user(server_url, "testuser") as user_url:
-                self.assertEquals(200, requests.get(user_url).status_code)
+        users = {
+            'user1': {'password': 1},
+            'user2': {'password': 2},
+        }
+        with TestServer(users) as devpi:
+            self.assertEquals(200, requests.get(devpi.url + '/user1').status_code)
+            self.assertEquals(200, requests.get(devpi.url + '/user2').status_code)
+            self.assertEquals(404, requests.get(devpi.url + '/user3').status_code)
 
     def test_index_creation(self):
-        with devpi_server() as server_url:
-            with devpi_user(server_url, "testuser"):
-                with devpi_index(server_url, "testuser", "testindex") as index_url:
-                    self.assertEquals(200, requests.get(index_url).status_code)
+        users = {
+            'user1': {'password': 1},
+        }
+        indices = {
+            'user1/index1': {},
+            'user1/index2': {},
+        }
+        with TestServer(users, indices) as devpi:
+            self.assertEquals(200, requests.get(devpi.url + '/user1/index1').status_code)
+            self.assertEquals(200, requests.get(devpi.url + '/user1/index2').status_code)
+            self.assertEquals(404, requests.get(devpi.url + '/user1/index3').status_code)

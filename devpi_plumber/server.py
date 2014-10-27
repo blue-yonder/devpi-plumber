@@ -1,48 +1,43 @@
 import contextlib
-import shutil
 import subprocess
-import tempfile
+
+from twitter.common.contextutil import temporary_dir
 
 from devpi_plumber.client import DevpiClient
 
 
 @contextlib.contextmanager
-def devpi_server(port=2414, options=[]):
-    server_dir = tempfile.mkdtemp()
-    try:
-        subprocess.check_output(['devpi-server', '--start', '--serverdir={}'.format(server_dir), '--port={}'.format(port)] + options, stderr=subprocess.STDOUT)
-        try:
-            yield 'http://localhost:{}'.format(port)
-        finally:
-            subprocess.check_output(['devpi-server', '--stop', '--serverdir={}'.format(server_dir)] + options, stderr=subprocess.STDOUT)
-    finally:
-        shutil.rmtree(server_dir)
+def TestServer(users={}, indices={}, config={}):
+    """
+    Starts a devpi server to be used within tests
+
+    Users: Dictionary of
+    """
+
+    with temporary_dir() as server_dir:
+
+        server_options = {
+            'port' : 2414,
+            'serverdir' : server_dir}
+        server_options.update(config)
+
+        with DevpiServer(server_options) as url:
+            with DevpiClient(url, 'root', '') as client:
+
+                for user, kwargs in users.iteritems():
+                    client.create_user(user, **kwargs)
+
+                for index, kwargs in indices.iteritems():
+                    client.create_index(index, **kwargs)
+
+                yield client # Server is wiped on return. No need to cleanup users and indices
 
 
 @contextlib.contextmanager
-def devpi_user(server_url, user, password=""):
-    """
-    Creates the giver user, and deletes it afterwards
-    """
-    with DevpiClient(server_url) as devpi_client:
-        devpi_client.execute('user', '-c', user, 'password=' + password)
+def DevpiServer(options):
+        args = ['--{}={}'.format(k, v) for k,v in options.iteritems()]
+        subprocess.check_output(['devpi-server', '--start'] + args, stderr=subprocess.STDOUT)
         try:
-            yield '{}/{}'.format(server_url, user)
+            yield 'http://localhost:{}'.format(options['port'])
         finally:
-            devpi_client.execute('login', user, '--password', password)
-            devpi_client.execute('user', user, '--delete')
-
-
-@contextlib.contextmanager
-def devpi_index(server_url, user, index, password="", **kwargs):
-    """
-    Creates the given index for the given user drop it afterwards.
-    """
-    with DevpiClient(server_url, user, password) as devpi_client:
-        print devpi_client.execute('index', '-c', index, 'bases=', **kwargs)
-        try:
-            yield '{}/{}/{}'.format(server_url, user, index)
-        finally:
-            devpi_client.execute('index', '--delete', '/{}/{}'.format(user, index))
-
-
+            subprocess.check_output(['devpi-server', '--stop'] + args, stderr=subprocess.STDOUT)

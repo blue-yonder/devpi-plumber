@@ -18,7 +18,8 @@ setup(
     license='new BSD',
     install_requires=[
         'devpi-client',
-        'devpi-server'
+        'devpi-server',
+        'twitter.common.contextutil'
     ],
     setup_requires=[
         'nose'
