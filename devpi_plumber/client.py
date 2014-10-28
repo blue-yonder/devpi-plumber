@@ -14,7 +14,7 @@ class DevpiClient(object):
 
     def __enter__(self):
         self._client_dir = tempfile.mkdtemp()
-        self.execute('use', self._url)
+        self.use()
         if self._user and self._password is not None:
             self.login(self._user, self._password)
         return self
@@ -43,11 +43,20 @@ class DevpiClient(object):
     def login(self, user, password):
         return self.execute('login', user, '--password', password)
 
+    def logoff(self):
+        return self.execute('logoff')
+
     def create_user(self, user, *args, **kwargs):
         return self.execute('user', '--create', user, *args, **kwargs)
 
     def create_index(self, index, *args, **kwargs):
         return self.execute('index', '--create', index, *args, **kwargs)
+
+    def modify_user(self, user, *args, **kwargs):
+        return self.execute('user', '--modify', user, *args, **kwargs)
+
+    def modify_index(self, index, *args, **kwargs):
+        return self.execute('index', index, *args, **kwargs)
 
     def upload(self, package, directory=False):
         args = "--from-dir" if directory else ""

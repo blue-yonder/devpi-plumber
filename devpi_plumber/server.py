@@ -13,7 +13,6 @@ def TestServer(users={}, indices={}, config={}):
 
     Users: Dictionary of
     """
-
     with temporary_dir() as server_dir:
 
         server_options = {
