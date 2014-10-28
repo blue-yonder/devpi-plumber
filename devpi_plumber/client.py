@@ -14,10 +14,14 @@ class DevpiClient(object):
 
     def __enter__(self):
         self._client_dir = tempfile.mkdtemp()
-        self.use()
-        if self._user and self._password is not None:
-            self.login(self._user, self._password)
-        return self
+        try:
+            self.use()
+            if self._user and self._password is not None:
+                self.login(self._user, self._password)
+            return self
+        except:
+            self.__exit__()
+            raise
 
     def __exit__(self, *args):
         shutil.rmtree(self._client_dir)
