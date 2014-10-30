@@ -9,9 +9,7 @@ from devpi_plumber.client import DevpiClient
 @contextlib.contextmanager
 def TestServer(users={}, indices={}, config={}):
     """
-    Starts a devpi server to be used within tests
-
-    Users: Dictionary of
+    Starts a devpi server to be used within tests.
     """
     with temporary_dir() as server_dir:
 
