@@ -39,7 +39,7 @@ class DevpiCommandWrapper(object):
         self._url = url
         self._client_dir = client_dir
 
-    def execute(self, *args, **kwargs):
+    def _execute(self, *args, **kwargs):
         keywordargs = { '--clientdir' : self._client_dir }
         keywordargs.update(kwargs)
 
@@ -54,29 +54,29 @@ class DevpiCommandWrapper(object):
                 raise DevpiClientException(output.getvalue())
 
     def use(self, *args):
-        return self.execute('use', '/'.join([self._url] + list(args)))
+        return self._execute('use', '/'.join([self._url] + list(args)))
 
     def login(self, user, password):
-        return self.execute('login', user, '--password', password)
+        return self._execute('login', user, '--password', password)
 
     def logoff(self):
-        return self.execute('logoff')
+        return self._execute('logoff')
 
     def create_user(self, user, *args, **kwargs):
-        return self.execute('user', '--create', user, *args, **kwargs)
+        return self._execute('user', '--create', user, *args, **kwargs)
 
     def create_index(self, index, *args, **kwargs):
-        return self.execute('index', '--create', index, *args, **kwargs)
+        return self._execute('index', '--create', index, *args, **kwargs)
 
     def modify_user(self, user, *args, **kwargs):
-        return self.execute('user', '--modify', user, *args, **kwargs)
+        return self._execute('user', '--modify', user, *args, **kwargs)
 
     def modify_index(self, index, *args, **kwargs):
-        return self.execute('index', index, *args, **kwargs)
+        return self._execute('index', index, *args, **kwargs)
 
     def upload(self, package, directory=False):
         args = "--from-dir" if directory else ""
-        return self.execute("upload", args, package)
+        return self._execute("upload", args, package)
 
     @property
     def url(self):
