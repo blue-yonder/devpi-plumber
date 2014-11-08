@@ -1,11 +1,10 @@
 import sys
-import tempfile
-import shutil
 import logging
+import contextlib
 from cStringIO import StringIO
 
 from devpi.main import main as devpi
-from twitter.common.contextutil import mutable_sys
+from twitter.common.contextutil import mutable_sys, temporary_dir
 
 
 logging.getLogger("requests").setLevel(logging.WARNING)
@@ -16,34 +15,29 @@ class DevpiClientException(Exception):
     """
     Exception thrown whenever a client command fails
     """
+    pass
 
 
-class DevpiClient(object):
+@contextlib.contextmanager
+def DevpiClient(url, user=None, password=None):
     """
-    Light wrapper object around the devpi client.
+    Yields a light wrapper object around the devpi client.
     """
-    def __init__(self, url, user=None, password=None):
+    with temporary_dir() as client_dir:
+        wrapper = DevpiCommandWrapper(url, client_dir)
+
+        wrapper.use()
+        if user and password is not None:
+            wrapper.login(user, password)
+
+        yield wrapper
+
+
+class DevpiCommandWrapper(object):
+
+    def __init__(self, url, client_dir):
         self._url = url
-        self._user = user
-        self._password = password
-
-    def __enter__(self):
-        self._client_dir = tempfile.mkdtemp()
-        try:
-            self.use()
-            if self._user and self._password is not None:
-                self.login(self._user, self._password)
-            return self
-        except:
-            self.__exit__()
-            raise
-
-    def __exit__(self, *args):
-        shutil.rmtree(self._client_dir)
-
-    @property
-    def url(self):
-        return self._url
+        self._client_dir = client_dir
 
     def execute(self, *args, **kwargs):
         keywordargs = { '--clientdir' : self._client_dir }
@@ -83,3 +77,7 @@ class DevpiClient(object):
     def upload(self, package, directory=False):
         args = "--from-dir" if directory else ""
         return self.execute("upload", args, package)
+
+    @property
+    def url(self):
+        return self._url
