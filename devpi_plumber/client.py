@@ -1,6 +1,21 @@
-import subprocess
+import sys
 import tempfile
 import shutil
+import logging
+from cStringIO import StringIO
+
+from devpi.main import main as devpi
+from twitter.common.contextutil import mutable_sys
+
+
+logging.getLogger("requests").setLevel(logging.WARNING)
+logging.getLogger("devpi").setLevel(logging.WARNING)
+
+
+class DevpiClientException(Exception):
+    """
+    Exception thrown whenever a client command fails
+    """
 
 
 class DevpiClient(object):
@@ -31,15 +46,18 @@ class DevpiClient(object):
         return self._url
 
     def execute(self, *args, **kwargs):
-        try:
-            return subprocess.check_output(
-                ['devpi'] + list(args)
-                          + ['{}={}'.format(k, v) for k,v in kwargs.iteritems()]
-                          + ['--clientdir={}'.format(self._client_dir)],
-                stderr=subprocess.STDOUT
-            )
-        except subprocess.CalledProcessError as e:
-            raise RuntimeError("Devpi command failed: " + e.output + str(e))
+        keywordargs = { '--clientdir' : self._client_dir }
+        keywordargs.update(kwargs)
+
+        args = ['devpi'] + list(args) + ['{}={}'.format(k, v) for k,v in keywordargs.iteritems()]
+
+        with mutable_sys():
+            sys.stdout = sys.stderr = output = StringIO()
+            try:
+                devpi(args)
+                return output.getvalue()
+            except SystemExit:
+                raise DevpiClientException(output.getvalue())
 
     def use(self, *args):
         return self.execute('use', '/'.join([self._url] + list(args)))
