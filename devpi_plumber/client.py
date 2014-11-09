@@ -79,9 +79,11 @@ class DevpiCommandWrapper(object):
     def modify_index(self, index, *args, **kwargs):
         return self._execute('index', index, *args, **kwargs)
 
-    def upload(self, package, directory=False):
-        args = "--from-dir" if directory else ""
-        return self._execute("upload", args, package)
+    def upload(self, path, directory=False):
+        if directory:
+            return self._execute("upload", "--from-dir", path)
+        else:
+            return self._execute("upload", path)
 
     @property
     def url(self):

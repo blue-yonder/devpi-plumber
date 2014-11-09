@@ -54,3 +54,19 @@ class ClientTest(TestCase):
 
         with TestServer(users, indices) as devpi:
             self.assertIn("changing bases", devpi.modify_index("user/index", bases="root/pypi"))
+
+    def test_upload_file(self):
+        users = { "user": {"password": "secret"} }
+        indices = { "user/index": {} }
+
+        with TestServer(users, indices) as devpi:
+            devpi.use("user/index")
+            self.assertEqual("", devpi.upload('tests/fixture/package/dist/test_package-0.1_dev-cp27-none-linux_x86_64.whl'))
+
+    def test_upload_folder(self):
+        users = { "user": {"password": "secret"} }
+        indices = { "user/index": {} }
+
+        with TestServer(users, indices) as devpi:
+            devpi.use("user/index")
+            self.assertEqual("", devpi.upload('tests/fixture/package/', directory=True))
