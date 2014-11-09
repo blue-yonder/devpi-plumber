@@ -1,5 +1,6 @@
 import sys
 import logging
+import urlparse
 import contextlib
 from cStringIO import StringIO
 
@@ -36,8 +37,12 @@ def DevpiClient(url, user=None, password=None):
 class DevpiCommandWrapper(object):
 
     def __init__(self, url, client_dir):
-        self._url = url
+        self._server_url = self._extract_server_url(url)
         self._client_dir = client_dir
+
+    def _extract_server_url(self, url):
+        parts = urlparse.urlsplit(url)
+        return urlparse.urlunsplit((parts.scheme, parts.netloc, '', '', ''))
 
     def _execute(self, *args, **kwargs):
         keywordargs = { '--clientdir' : self._client_dir }
@@ -54,7 +59,7 @@ class DevpiCommandWrapper(object):
                 raise DevpiClientException(output.getvalue())
 
     def use(self, *args):
-        return self._execute('use', '/'.join([self._url] + list(args)))
+        return self._execute('use', '/'.join([self._server_url] + list(args)))
 
     def login(self, user, password):
         return self._execute('login', user, '--password', password)
@@ -80,4 +85,4 @@ class DevpiCommandWrapper(object):
 
     @property
     def url(self):
-        return self._url
+        return self._server_url
