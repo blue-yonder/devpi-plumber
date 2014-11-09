@@ -17,11 +17,11 @@ with DevpiClient('https://devpi.company.com', 'user', 'secret') as devpi:
 In order to simplify the testing of such plumbing scripts, it ships with a simple context manager for starting and stopping devpi servers in tests:
 ```python
 users = { 
-    'user': {'password': 'secret'}
+    'user': {'password': 'secret'},
 }
 indices = {
-    'user/prodindex': {},
-    'user/testindex': {bases:'user/prodindex'},
+    'user/prodindex': { },
+    'user/testindex': {'bases': 'user/prodindex'},
 }
 with TestServer(users, indices) as devpi:
     devpi.use('user/testindex')
