@@ -60,13 +60,15 @@ class ClientTest(TestCase):
         indices = { "user/index": {} }
 
         with TestServer(users, indices) as devpi:
+            devpi.login('user', 'secret')
             devpi.use("user/index")
-            self.assertEqual("", devpi.upload('tests/fixture/package/dist/test_package-0.1_dev-cp27-none-linux_x86_64.whl'))
+            self.assertNotIn("403 FAIL", devpi.upload('tests/fixture/package/dist/test_package-0.1_dev-cp27-none-linux_x86_64.whl'))
 
     def test_upload_folder(self):
         users = { "user": {"password": "secret"} }
         indices = { "user/index": {} }
 
         with TestServer(users, indices) as devpi:
+            devpi.login('user', 'secret')
             devpi.use("user/index")
-            self.assertEqual("", devpi.upload('tests/fixture/package/', directory=True))
+            self.assertNotIn("403 FAIL", devpi.upload('tests/fixture/package/', directory=True))
