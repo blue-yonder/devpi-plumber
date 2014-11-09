@@ -19,5 +19,11 @@ class ClientTest(TestCase):
             with self.assertRaisesRegexp(DevpiClientException, "401 Unauthorized"):
                 devpi.login('user', 'wrong password')
 
+    def test_logoff(self):
+        with TestServer() as devpi:
+            self.assertIn("login information deleted", devpi.logoff())
 
-
+    def test_use(self):
+        with TestServer() as devpi:
+            expected = "current devpi index: " + devpi.url + "/root/pypi"
+            self.assertIn(expected, devpi.use("root/pypi"))
