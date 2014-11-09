@@ -9,8 +9,8 @@ Mario by Example:
 -----------------
 Among others, it can be used to automate the upload of packages:
 ```python
-with DevpiClient('http://devpi.company.com', 'user', 'password') as devpi:
-    devpi.use('user/test')
+with DevpiClient('https://devpi.company.com', 'user', 'secret') as devpi:
+    devpi.use('user/testindex')
     devpi.upload('path_to_package')
 ```
 
@@ -20,11 +20,11 @@ users = {
     'user': {'password': 'secret'}
 }
 indices = {
-    'user/prod': {},
-    'user/test': {bases:'user/prod'},
+    'user/prodindex': {},
+    'user/testindex': {bases:'user/prodindex'},
 }
 with TestServer(users, indices) as devpi:
-    devpi.use('user/test')
+    devpi.use('user/testindex')
     devpi.upload('path_to_package')
 ```           
 
