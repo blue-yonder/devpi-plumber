@@ -2,7 +2,7 @@ import requests
 from unittest import TestCase
 
 from devpi_plumber.server import TestServer
-from devpi_plumber.client import DevpiClientException
+from devpi_plumber.client import DevpiClientError
 
 
 class ClientTest(TestCase):
@@ -17,7 +17,7 @@ class ClientTest(TestCase):
         users = { "user": {"password": "secret"} }
 
         with TestServer(users) as devpi:
-            with self.assertRaisesRegexp(DevpiClientException, "401 Unauthorized"):
+            with self.assertRaisesRegexp(DevpiClientError, "401 Unauthorized"):
                 devpi.login('user', 'wrong password')
 
     def test_logoff(self):

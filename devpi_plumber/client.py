@@ -12,7 +12,7 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("devpi").setLevel(logging.WARNING)
 
 
-class DevpiClientException(Exception):
+class DevpiClientError(Exception):
     """
     Exception thrown whenever a client command fails
     """
@@ -56,7 +56,7 @@ class DevpiCommandWrapper(object):
                 devpi(args)
                 return output.getvalue()
             except SystemExit:
-                raise DevpiClientException(output.getvalue())
+                raise DevpiClientError(output.getvalue())
 
     def use(self, *args):
         return self._execute('use', '/'.join([self._server_url] + list(args)))
