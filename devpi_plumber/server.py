@@ -1,6 +1,7 @@
 import contextlib
 import subprocess
 
+from six import iteritems
 from twitter.common.contextutil import temporary_dir
 
 from devpi_plumber.client import DevpiClient
@@ -21,10 +22,10 @@ def TestServer(users={}, indices={}, config={}):
         with DevpiServer(server_options) as url:
             with DevpiClient(url, 'root', '') as client:
 
-                for user, kwargs in users.iteritems():
+                for user, kwargs in iteritems(users):
                     client.create_user(user, **kwargs)
 
-                for index, kwargs in indices.iteritems():
+                for index, kwargs in iteritems(indices):
                     client.create_index(index, **kwargs)
 
                 yield client # Server is wiped on return. No need to cleanup users and indices
@@ -32,7 +33,7 @@ def TestServer(users={}, indices={}, config={}):
 
 @contextlib.contextmanager
 def DevpiServer(options):
-        args = ['--{}={}'.format(k, v) for k,v in options.iteritems()]
+        args = ['--{}={}'.format(k, v) for k,v in iteritems(options)]
         subprocess.check_output(['devpi-server', '--start'] + args, stderr=subprocess.STDOUT)
         try:
             yield 'http://localhost:{}'.format(options['port'])

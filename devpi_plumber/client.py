@@ -1,8 +1,11 @@
 import sys
 import logging
-import urlparse
 import contextlib
-from cStringIO import StringIO
+from collections import OrderedDict
+
+from six import StringIO
+from six import iteritems
+from six.moves.urllib.parse import urlsplit, urlunsplit
 
 from devpi.main import main as devpi
 from twitter.common.contextutil import mutable_sys, temporary_dir
@@ -41,14 +44,14 @@ class DevpiCommandWrapper(object):
         self._client_dir = client_dir
 
     def _extract_server_url(self, url):
-        parts = urlparse.urlsplit(url)
-        return urlparse.urlunsplit((parts.scheme, parts.netloc, '', '', ''))
+        parts = urlsplit(url)
+        return urlunsplit((parts.scheme, parts.netloc, '', '', ''))
 
     def _execute(self, *args, **kwargs):
-        keywordargs = { '--clientdir' : self._client_dir }
-        keywordargs.update(kwargs)
+        kwargs = OrderedDict(kwargs)
+        kwargs.update({'--clientdir': self._client_dir})
 
-        args = ['devpi'] + list(args) + ['{}={}'.format(k, v) for k,v in keywordargs.iteritems()]
+        args = ['devpi'] + list(args) + ['{}={}'.format(k, v) for k,v in iteritems(kwargs)]
 
         with mutable_sys():
             sys.stdout = sys.stderr = output = StringIO()

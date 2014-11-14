@@ -32,7 +32,7 @@ class ClientTest(TestCase):
     def test_create_user(self):
         with TestServer() as devpi:
             devpi.create_user("user", password="password", email="user@example.com")
-            self.assertEquals(200, requests.get(devpi.url + "/user").status_code)
+            self.assertEqual(200, requests.get(devpi.url + "/user").status_code)
 
     def test_modify_user(self):
         users = { "user": {"password": "secret"} }
@@ -46,7 +46,7 @@ class ClientTest(TestCase):
 
         with TestServer(users) as devpi:
             devpi.create_index("user/index")
-            self.assertEquals(200, requests.get(devpi.url + "/user/index").status_code)
+            self.assertEqual(200, requests.get(devpi.url + "/user/index").status_code)
 
     def test_modify_index(self):
         users = { "user": {"password": "secret"} }
@@ -64,7 +64,7 @@ class ClientTest(TestCase):
             devpi.use("user/index")
             devpi.upload("tests/fixture/package/dist/test_package-0.1_dev-cp27-none-linux_x86_64.whl")
 
-            self.assertEquals(200, requests.get(devpi.url + "/user/index/+simple/test_package").status_code)
+            self.assertEqual(200, requests.get(devpi.url + "/user/index/+simple/test_package").status_code)
 
     def test_upload_folder(self):
         users = { "user": {"password": "secret"} }
@@ -75,6 +75,6 @@ class ClientTest(TestCase):
             devpi.use("user/index")
             devpi.upload("tests/fixture/package/", directory=True)
 
-            self.assertEquals(200, requests.get(devpi.url + "/user/index/+simple/test_package").status_code)
+            self.assertEqual(200, requests.get(devpi.url + "/user/index/+simple/test_package").status_code)
 
 

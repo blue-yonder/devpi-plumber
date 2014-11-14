@@ -19,7 +19,8 @@ setup(
     install_requires=[
         'devpi-client',
         'devpi-server',
-        'twitter.common.contextutil'
+        'twitter.common.contextutil',
+        'six'
     ],
     setup_requires=[
         'nose'
