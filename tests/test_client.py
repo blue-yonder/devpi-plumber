@@ -62,7 +62,7 @@ class ClientTest(TestCase):
         with TestServer(users, indices) as devpi:
             devpi.login("user", "secret")
             devpi.use("user/index")
-            devpi.upload("tests/fixture/package/dist/test_package-0.1-cp34-cp34m-linux_x86_64.whl")
+            devpi.upload("tests/fixture/package/dist/test-package-0.1.tar.gz")
 
             self.assertEqual(200, requests.get(devpi.url + "/user/index/+simple/test_package").status_code)
 
@@ -77,4 +77,27 @@ class ClientTest(TestCase):
 
             self.assertEqual(200, requests.get(devpi.url + "/user/index/+simple/test_package").status_code)
 
+    def test_list_existing_package(self):
+        users = { "user": {"password": "secret"} }
+        indices = { "user/index": {} }
 
+        with TestServer(users, indices) as devpi:
+            devpi.login("user", "secret")
+            devpi.use("user/index")
+            devpi.upload("tests/fixture/package/", directory=True)
+
+            expected = ['test_package-0.1-cp34-cp34m-linux_x86_64.whl', 'test-package-0.1.tar.gz']
+            actual = devpi.list("test_package==0.1")
+
+            self.assertEqual(len(actual), len(expected))
+            for entry in actual:
+                self.assertTrue(any(entry.endswith(package) for package in expected))
+
+    def test_list_nonexisting_package(self):
+        users = { "user": {"password": "secret"} }
+        indices = { "user/index": {} }
+
+        with TestServer(users, indices) as devpi:
+            devpi.use("user/index")
+
+            self.assertEqual([], devpi.list("test_package==0.1"))

@@ -88,6 +88,15 @@ class DevpiCommandWrapper(object):
         else:
             return self._execute("upload", path)
 
+    def list(self, *args):
+        try:
+            return self._execute('list', *args).splitlines()
+        except DevpiClientError as e:
+            if '404 Not Found' in str(e):
+                return []
+            else:
+                raise e
+
     @property
     def url(self):
         return self._server_url
