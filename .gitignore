@@ -1,9 +1,10 @@
 *.egg
+.eggs
 *.egg-info
 .idea
 .coverage
 atlassian-ide-plugin.xml
 *.pyc
-venv/
+venv*/
 build
 dist
