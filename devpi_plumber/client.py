@@ -3,10 +3,8 @@ import logging
 import contextlib
 from collections import OrderedDict
 
-from six import StringIO
-from six import iteritems
+from six import iteritems, StringIO
 from six.moves.urllib.parse import urlsplit, urlunsplit
-
 from devpi.main import main as devpi
 from twitter.common.contextutil import mutable_sys, temporary_dir
 
