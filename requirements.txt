@@ -4,5 +4,6 @@ twitter.common.contextutil==0.3.2
 six==1.8.0
 
 nose
+nose-progressive
 mock
 coverage

@@ -27,6 +27,7 @@ setup(
     ],
     tests_require=[
         'nose',
+        'nose-progressive',
         'mock',
         'coverage',
     ],
