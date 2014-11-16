@@ -10,10 +10,6 @@ from twitter.common.contextutil import temporary_dir
 from devpi_plumber.client import DevpiClient
 
 
-serverdir_cache = '/tmp/devpi-plumber-cache'
-atexit.register(shutil.rmtree, serverdir_cache, ignore_errors=True)
-
-
 @contextlib.contextmanager
 def TestServer(users={}, indices={}, config={}):
     """
@@ -48,6 +44,10 @@ def DevpiServer(options):
             yield 'http://localhost:{}'.format(options['port'])
         finally:
             subprocess.check_output(['devpi-server', '--stop'] + args, stderr=subprocess.STDOUT)
+
+
+serverdir_cache = '/tmp/devpi-plumber-cache'
+atexit.register(shutil.rmtree, serverdir_cache, ignore_errors=True)
 
 
 def prefill_serverdir(server_options):
