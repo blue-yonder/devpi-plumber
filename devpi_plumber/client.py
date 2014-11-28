@@ -28,7 +28,6 @@ def DevpiClient(url, user=None, password=None):
     with temporary_dir() as client_dir:
         wrapper = DevpiCommandWrapper(url, client_dir)
 
-        wrapper.use()
         if user and password is not None:
             wrapper.login(user, password)
 
@@ -38,8 +37,10 @@ def DevpiClient(url, user=None, password=None):
 class DevpiCommandWrapper(object):
 
     def __init__(self, url, client_dir):
-        self._url = self._server_url = self._extract_server_url(url)
+        self._url = url
+        self._server_url = self._extract_server_url(url)
         self._client_dir = client_dir
+        self._execute('use', url)
 
     def _extract_server_url(self, url):
         parts = urlsplit(url)
