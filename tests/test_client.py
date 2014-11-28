@@ -29,10 +29,15 @@ class ClientTest(TestCase):
             expected = "current devpi index: " + devpi.url + "/root/pypi"
             self.assertIn(expected, devpi.use("root/pypi"))
 
+    def test_url(self):
+        with TestServer() as devpi:
+            devpi.use("root/pypi")
+            self.assertEquals(devpi.server_url + "/root/pypi", devpi.url)
+
     def test_create_user(self):
         with TestServer() as devpi:
             devpi.create_user("user", password="password", email="user@example.com")
-            self.assertEqual(200, requests.get(devpi.url + "/user").status_code)
+            self.assertEqual(200, requests.get(devpi.server_url + "/user").status_code)
 
     def test_modify_user(self):
         users = { "user": {"password": "secret"} }
@@ -46,7 +51,7 @@ class ClientTest(TestCase):
 
         with TestServer(users) as devpi:
             devpi.create_index("user/index")
-            self.assertEqual(200, requests.get(devpi.url + "/user/index").status_code)
+            self.assertEqual(200, requests.get(devpi.server_url + "/user/index").status_code)
 
     def test_modify_index(self):
         users = { "user": {"password": "secret"} }
@@ -64,7 +69,7 @@ class ClientTest(TestCase):
             devpi.use("user/index")
             devpi.upload("tests/fixture/package/dist/test-package-0.1.tar.gz")
 
-            self.assertEqual(200, requests.get(devpi.url + "/user/index/+simple/test_package").status_code)
+            self.assertEqual(200, requests.get(devpi.server_url + "/user/index/+simple/test_package").status_code)
 
     def test_upload_folder(self):
         users = { "user": {"password": "secret"} }
@@ -75,7 +80,7 @@ class ClientTest(TestCase):
             devpi.use("user/index")
             devpi.upload("tests/fixture/package/", directory=True)
 
-            self.assertEqual(200, requests.get(devpi.url + "/user/index/+simple/test_package").status_code)
+            self.assertEqual(200, requests.get(devpi.server_url + "/user/index/+simple/test_package").status_code)
 
     def test_list_existing_package(self):
         users = { "user": {"password": "secret"} }

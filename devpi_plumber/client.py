@@ -38,7 +38,7 @@ def DevpiClient(url, user=None, password=None):
 class DevpiCommandWrapper(object):
 
     def __init__(self, url, client_dir):
-        self._server_url = self._extract_server_url(url)
+        self._url = self._server_url = self._extract_server_url(url)
         self._client_dir = client_dir
 
     def _extract_server_url(self, url):
@@ -60,7 +60,10 @@ class DevpiCommandWrapper(object):
                 raise DevpiClientError(output.getvalue())
 
     def use(self, *args):
-        return self._execute('use', '/'.join([self._server_url] + list(args)))
+        url = '/'.join([self._server_url] + list(args))
+        result = self._execute('use', url)
+        self._url = url # to be exception save, only updated now
+        return result
 
     def login(self, user, password):
         return self._execute('login', user, '--password', password)
@@ -96,5 +99,9 @@ class DevpiCommandWrapper(object):
                 raise e
 
     @property
-    def url(self):
+    def server_url(self):
         return self._server_url
+
+    @property
+    def url(self):
+        return self._url
