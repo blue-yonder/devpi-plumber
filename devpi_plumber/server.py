@@ -57,7 +57,9 @@ def prefill_serverdir(server_options):
     """
     serverdir_new = server_options['serverdir']
 
-    if os.path.exists(serverdir_cache):
+    if 'master-url' in server_options:
+        return # always has to be a fresh sync
+    elif os.path.exists(serverdir_cache):
         shutil.rmtree(serverdir_new)
         shutil.copytree(serverdir_cache, serverdir_new)
     else:
