@@ -1,5 +1,5 @@
-devpi-client==2.0.3
-devpi-server==2.1.2
+devpi-client==2.0.4
+devpi-server==2.1.3
 twitter.common.contextutil==0.3.2
 six==1.8.0
 
