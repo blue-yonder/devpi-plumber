@@ -82,6 +82,17 @@ class ClientTest(TestCase):
 
             self.assertEqual(200, requests.get(devpi.server_url + "/user/index/+simple/test_package").status_code)
 
+    def test_upload_dry_run(self):
+        users = { "user": {"password": "secret"} }
+        indices = { "user/index": {} }
+
+        with TestServer(users, indices) as devpi:
+            devpi.login("user", "secret")
+            devpi.use("user/index")
+            devpi.upload("tests/fixture/package/dist/test-package-0.1.tar.gz", dry_run=True)
+
+            self.assertIn('no such project', requests.get(devpi.server_url + "/user/index/+simple/test_package").text)
+
     def test_list_existing_package(self):
         users = { "user": {"password": "secret"} }
         indices = { "user/index": {} }
