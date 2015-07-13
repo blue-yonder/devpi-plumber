@@ -125,6 +125,9 @@ class DevpiCommandWrapper(object):
             if user is None or line.startswith(user + '/')
         ]
 
+    def remove(self, *args):
+        return self._execute('remove', '-y', *args)
+
     @property
     def server_url(self):
         return self._server_url

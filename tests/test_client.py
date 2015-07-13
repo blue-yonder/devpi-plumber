@@ -155,3 +155,29 @@ class ClientTest(TestCase):
             with TestServer(config={'master-url':devpi.server_url, 'port' : 2413}) as replica:
 
                 self.assertNotEqual(devpi.server_url, replica.server_url)
+
+    def test_remove(self):
+        users = { "user": {"password": "secret"} }
+        indices = { "user/index": {} }
+
+        with TestServer(users, indices) as devpi:
+            devpi.login("user", "secret")
+            devpi.use("user/index")
+            devpi.upload("tests/fixture/package/", directory=True)
+
+            devpi.remove("test_package==0.1")
+
+            self.assertListEqual([], devpi.list("test_package==0.1"))
+
+    def test_remove_invalid(self):
+        users = { "user": {"password": "secret"} }
+        indices = { "user/index": {} }
+
+        with TestServer(users, indices) as devpi:
+            devpi.login("user", "secret")
+            devpi.use("user/index")
+            devpi.upload("tests/fixture/package/", directory=True)
+
+            devpi.remove("test_package==0.2")
+
+            self.assertEquals(2, len(devpi.list("test_package==0.1")))
