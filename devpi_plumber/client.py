@@ -40,6 +40,7 @@ class DevpiCommandWrapper(object):
         self._url = url
         self._server_url = self._extract_server_url(url)
         self._client_dir = client_dir
+        self._user = None
         self._execute('use', url)
 
     def _extract_server_url(self, url):
@@ -67,10 +68,15 @@ class DevpiCommandWrapper(object):
         return result
 
     def login(self, user, password):
-        return self._execute('login', user, '--password', password)
+        result = self._execute('login', user, '--password', password)
+        if 'credentials valid' in result:
+            self._user = user
+        return result
 
     def logoff(self):
-        return self._execute('logoff')
+        result = self._execute('logoff')
+        self._user = None
+        return result
 
     def create_user(self, user, *args, **kwargs):
         return self._execute('user', '--create', user, *args, **kwargs)
@@ -126,3 +132,8 @@ class DevpiCommandWrapper(object):
     @property
     def url(self):
         return self._url
+
+    @property
+    def user(self):
+        """ The user currently logged in to devpi with this client. """
+        return self._user

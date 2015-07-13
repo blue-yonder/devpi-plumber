@@ -12,6 +12,7 @@ class ClientTest(TestCase):
 
         with TestServer(users) as devpi:
             self.assertIn("credentials valid", devpi.login("user", "secret"))
+            self.assertEquals("user", devpi.user)
 
     def test_login_error(self):
         users = { "user": {"password": "secret"} }
@@ -19,10 +20,12 @@ class ClientTest(TestCase):
         with TestServer(users) as devpi:
             with self.assertRaisesRegexp(DevpiClientError, "401 Unauthorized"):
                 devpi.login('user', 'wrong password')
+            self.assertEquals('root', devpi.user)
 
     def test_logoff(self):
         with TestServer() as devpi:
             self.assertIn("login information deleted", devpi.logoff())
+            self.assertIsNone(devpi.user)
 
     def test_use(self):
         with TestServer() as devpi:
