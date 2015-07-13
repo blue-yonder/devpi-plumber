@@ -60,6 +60,16 @@ class ClientTest(TestCase):
         with TestServer(users, indices) as devpi:
             self.assertIn("changing bases", devpi.modify_index("user/index", bases="root/pypi"))
 
+    def test_list_indices(self):
+        users = { "user": {"password": "secret"} }
+        indices = { "user/index": {} }
+
+        with TestServer(users, indices) as devpi:
+            listed = devpi.list_indices()
+            self.assertEquals(2, len(listed))
+            self.assertIn('root/pypi', listed)
+            self.assertIn('user/index', listed)
+
     def test_upload_file(self):
         users = { "user": {"password": "secret"} }
         indices = { "user/index": {} }
