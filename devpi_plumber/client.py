@@ -113,11 +113,11 @@ class DevpiCommandWrapper(object):
         :param user: Only list indices of this user.
         :return: List of indices in format ``<user>/<index>``.
         """
-        def by_user(index):
-            return (user is None) or index.startswith(user + '/')
-
-        all_indices = [line.split()[0] for line in self._execute('use', '-l').splitlines()]
-        return filter(by_user, all_indices)
+        return [
+            line.split()[0]
+            for line in self._execute('use', '-l').splitlines()
+            if user is None or line.startswith(user + '/')
+        ]
 
     @property
     def server_url(self):
