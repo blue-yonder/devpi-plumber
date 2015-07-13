@@ -70,6 +70,17 @@ class ClientTest(TestCase):
             self.assertIn('root/pypi', listed)
             self.assertIn('user/index', listed)
 
+    def test_list_indices_by_user(self):
+        users = { "user": {"password": "secret"} }
+        indices = { "user/index": {}, "user/index2": {} }
+
+        with TestServer(users, indices) as devpi:
+            listed = devpi.list_indices(user='root')
+            self.assertListEqual(['root/pypi'], listed)
+
+            listed = devpi.list_indices(user='user')
+            self.assertSetEqual(set(['user/index', 'user/index2']), set(listed))
+
     def test_upload_file(self):
         users = { "user": {"password": "secret"} }
         indices = { "user/index": {} }

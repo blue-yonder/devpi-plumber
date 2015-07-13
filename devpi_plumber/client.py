@@ -106,13 +106,18 @@ class DevpiCommandWrapper(object):
             else:
                 raise e
 
-    def list_indices(self):
+    def list_indices(self, user=None):
         """
         Show all available indices at the remote server.
 
+        :param user: Only list indices of this user.
         :return: List of indices in format ``<user>/<index>``.
         """
-        return [line.split()[0] for line in self._execute('use', '-l').splitlines()]
+        def by_user(index):
+            return (user is None) or index.startswith(user + '/')
+
+        all_indices = [line.split()[0] for line in self._execute('use', '-l').splitlines()]
+        return filter(by_user, all_indices)
 
     @property
     def server_url(self):
