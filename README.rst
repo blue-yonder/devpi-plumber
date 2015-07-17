@@ -28,7 +28,14 @@ Among others, it can be used to automate the upload of packages:
 
     with DevpiClient('https://devpi.company.com', 'user', 'secret') as devpi:
         devpi.use('user/testindex')
-        devpi.upload('path_to_package')
+        devpi.upload('path/to/package-1.0.tar.gz')
+
+To make it easier to perform modifications on non-volatile indices, there is a context manager that temporarily toggles the volatile flag.
+
+.. code:: python
+
+    with volatile_index(client, 'user/prodindex'):
+        devpi.remove('broken_package')
 
 In order to simplify the testing of such plumbing scripts, it ships with a simple context manager for starting and stopping devpi servers in tests.
 
@@ -45,14 +52,6 @@ In order to simplify the testing of such plumbing scripts, it ships with a simpl
         devpi.use('user/testindex')
         devpi.upload('path_to_package')
 
-To make it easier to perform operations which require a volatile index, there is a context manager that allows to ensure
-the volatility of it. By default is raises a ``DevpiClientError`` if used on non-volatile indices. Using its `force`
-parameter you can safely make the index volatile while ensuring the non-volatility is recreated afterwards.
-
-.. code:: python
-
-    with volatile_index(client, 'user/prodindex', force=True):
-        devpi.remove('broken_package')
 
 License
 =======
