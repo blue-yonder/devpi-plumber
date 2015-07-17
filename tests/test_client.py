@@ -1,8 +1,11 @@
 import requests
 from unittest import TestCase
 
+from mock import Mock
+from six import assertRaisesRegex
+
 from devpi_plumber.server import TestServer
-from devpi_plumber.client import DevpiClientError
+from devpi_plumber.client import DevpiClientError, DevpiCommandWrapper, volatile_index
 
 
 class ClientTest(TestCase):
@@ -181,3 +184,46 @@ class ClientTest(TestCase):
             devpi.remove("test_package==0.2")
 
             self.assertEquals(2, len(devpi.list("test_package==0.1")))
+
+
+class VolatileIndexTests(TestCase):
+
+    def test_raises_on_non_volatile_by_default(self):
+        client = Mock(spec=DevpiCommandWrapper)
+        client.modify_index.return_value = 'volatile=False'
+
+        with assertRaisesRegex(self, DevpiClientError, 'Index user/index1 is not volatile.'):
+            with volatile_index(client, 'user/index1'):
+                pass
+
+    def test_passes_on_volatile_by_default(self):
+        client = Mock(spec=DevpiCommandWrapper)
+        client.modify_index.return_value = 'volatile=True'
+
+        with volatile_index(client, 'user/index1'):
+            pass
+
+        for call in client.modify_index.call_args_list:
+            for pos_arg in call[0][1:]:
+                self.assertNotIn('volatile=False', pos_arg, 'Previously volatile index has been switched to be non-volatile.')
+
+    def test_toggles_non_volatile_if_forced(self):
+        client = Mock(spec=DevpiCommandWrapper)
+        client.modify_index.return_value = 'volatile=False'
+
+        with volatile_index(client, 'user/index1', force=True):
+            client.modify_index.assert_any_call('user/index1', 'volatile=True')
+            client.reset_mock()  # Such that we can verify what happens on exit
+
+        client.modify_index.assert_any_call('user/index1', 'volatile=False')
+
+    def test_is_exception_safe(self):
+        client = Mock(spec=DevpiCommandWrapper)
+        client.modify_index.return_value = 'volatile=False'
+
+        with self.assertRaises(Exception):
+            with volatile_index(client, 'user/index1', force=True):
+                client.reset_mock()  # Such that we can verify what happens on exit
+                raise Exception
+
+        client.modify_index.assert_any_call('user/index1', 'volatile=False')

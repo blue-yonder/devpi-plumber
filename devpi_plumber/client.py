@@ -140,3 +140,30 @@ class DevpiCommandWrapper(object):
     def user(self):
         """ The user currently logged in to devpi with this client. """
         return self._user
+
+
+@contextlib.contextmanager
+def volatile_index(client, index, force=False):
+    """
+    Ensure that the given index is volatile.
+
+    Unless the keyword argument `force` is used an exception will be raised if the index is not volatile.
+
+    :param client: A devpi_plumber.DevpiClient connected to the server to operate on.
+    :param index: The index to ensure the volatility on.
+    :param force: If True, the indices will be set volatile and reset at the end.
+    """
+    is_non_volatile = 'volatile=False' in client.modify_index(index)
+
+    if is_non_volatile:
+        if force:
+            client.modify_index(index, 'volatile=True')
+        else:
+            raise DevpiClientError('Index {} is not volatile.'.format(index))
+    try:
+
+        yield
+
+    finally:
+        if is_non_volatile:
+            client.modify_index(index, 'volatile=False')
