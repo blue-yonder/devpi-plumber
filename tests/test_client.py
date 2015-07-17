@@ -188,14 +188,6 @@ class ClientTest(TestCase):
 
 class VolatileIndexTests(TestCase):
 
-    def test_raises_on_non_volatile_by_default(self):
-        client = Mock(spec=DevpiCommandWrapper)
-        client.modify_index.return_value = 'volatile=False'
-
-        with assertRaisesRegex(self, DevpiClientError, 'Index user/index1 is not volatile.'):
-            with volatile_index(client, 'user/index1'):
-                pass
-
     def test_passes_on_volatile_by_default(self):
         client = Mock(spec=DevpiCommandWrapper)
         client.modify_index.return_value = 'volatile=True'
@@ -207,11 +199,11 @@ class VolatileIndexTests(TestCase):
             for pos_arg in call[0][1:]:
                 self.assertNotIn('volatile=False', pos_arg, 'Previously volatile index has been switched to be non-volatile.')
 
-    def test_toggles_non_volatile_if_forced(self):
+    def test_toggles_non_volatile_by_default(self):
         client = Mock(spec=DevpiCommandWrapper)
         client.modify_index.return_value = 'volatile=False'
 
-        with volatile_index(client, 'user/index1', force=True):
+        with volatile_index(client, 'user/index1'):
             client.modify_index.assert_any_call('user/index1', 'volatile=True')
             client.reset_mock()  # Such that we can verify what happens on exit
 
@@ -222,8 +214,23 @@ class VolatileIndexTests(TestCase):
         client.modify_index.return_value = 'volatile=False'
 
         with self.assertRaises(Exception):
-            with volatile_index(client, 'user/index1', force=True):
+            with volatile_index(client, 'user/index1'):
                 client.reset_mock()  # Such that we can verify what happens on exit
                 raise Exception
 
         client.modify_index.assert_any_call('user/index1', 'volatile=False')
+
+    def test_passes_on_non_volatile_if_fail_is_set(self):
+        client = Mock(spec=DevpiCommandWrapper)
+        client.modify_index.return_value = 'volatile=True'
+
+        with volatile_index(client, 'user/index1', fail=True):
+            pass
+
+    def test_raises_on_non_volatile_if_fail_is_set(self):
+        client = Mock(spec=DevpiCommandWrapper)
+        client.modify_index.return_value = 'volatile=False'
+
+        with assertRaisesRegex(self, DevpiClientError, 'Index user/index1 is not volatile.'):
+            with volatile_index(client, 'user/index1', fail=True):
+                pass
