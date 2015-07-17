@@ -42,8 +42,9 @@ In order to simplify the testing of such plumbing scripts, it ships with a simpl
 .. code:: python
 
     def do_maintenance(devpi):
+        """ My plumbing script """
         devpi.use('user/testindex')
-        devpi.upload('path/to/package-1.0.tar.gz')
+        # ...
 
     users = { 
         'user': {'password': 'secret'},
