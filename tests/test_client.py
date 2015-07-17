@@ -188,42 +188,32 @@ class ClientTest(TestCase):
 
 class VolatileIndexTests(TestCase):
 
-    def test_raises_on_non_volatile_by_default(self):
-        client = Mock(spec=DevpiCommandWrapper)
-        client.modify_index.return_value = 'volatile=False'
+    def test_set_unset_volatile_flag(self):
+        index = "user/index"
+        users = {"user": {"password": "secret"}}
+        indices = {index: {'volatile': False}}
 
-        with assertRaisesRegex(self, DevpiClientError, 'Index user/index1 is not volatile.'):
-            with volatile_index(client, 'user/index1'):
-                pass
+        with TestServer(users, indices) as client:
+            client.login("user", "secret")
 
-    def test_passes_on_volatile_by_default(self):
-        client = Mock(spec=DevpiCommandWrapper)
-        client.modify_index.return_value = 'volatile=True'
+            with volatile_index(client, index):
+                self.assertIn('volatile=True', client.modify_index(index))
+            self.assertIn('volatile=False', client.modify_index(index))
 
-        with volatile_index(client, 'user/index1'):
-            pass
+            with self.assertRaises(Exception):
+                with volatile_index(client, 'user/index'):
+                    raise Exception("Woops")
+            self.assertIn('volatile=False', client.modify_index(index))
 
-        for call in client.modify_index.call_args_list:
-            for pos_arg in call[0][1:]:
-                self.assertNotIn('volatile=False', pos_arg, 'Previously volatile index has been switched to be non-volatile.')
+    def test_throw_when_not_forced(self):
+        index = "user/index"
+        users = {"user": {"password": "secret"}}
+        indices = {index: {'volatile': False}}
 
-    def test_toggles_non_volatile_if_forced(self):
-        client = Mock(spec=DevpiCommandWrapper)
-        client.modify_index.return_value = 'volatile=False'
+        with TestServer(users, indices) as client:
+            client.login("user", "secret")
 
-        with volatile_index(client, 'user/index1', force=True):
-            client.modify_index.assert_any_call('user/index1', 'volatile=True')
-            client.reset_mock()  # Such that we can verify what happens on exit
-
-        client.modify_index.assert_any_call('user/index1', 'volatile=False')
-
-    def test_is_exception_safe(self):
-        client = Mock(spec=DevpiCommandWrapper)
-        client.modify_index.return_value = 'volatile=False'
-
-        with self.assertRaises(Exception):
-            with volatile_index(client, 'user/index1', force=True):
-                client.reset_mock()  # Such that we can verify what happens on exit
-                raise Exception
-
-        client.modify_index.assert_any_call('user/index1', 'volatile=False')
+            with self.assertRaises(Exception):
+                with volatile_index(client, 'user/index', force_volatile=False):
+                    pass
+            self.assertIn('volatile=False', client.modify_index(index))
