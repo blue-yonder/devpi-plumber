@@ -40,6 +40,7 @@ To make it easier to perform modifications on non-volatile indices, there is a c
 In order to simplify the testing of such plumbing scripts, it ships with a simple context manager for starting and stopping devpi servers in tests.
 
 .. code:: python
+
     def do_maintenance(devpi):
         devpi.use('user/testindex')
         devpi.upload('path/to/package-1.0.tar.gz')
