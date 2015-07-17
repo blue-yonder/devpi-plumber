@@ -34,7 +34,7 @@ To make it easier to perform modifications on non-volatile indices, there is a c
 
 .. code:: python
 
-    with volatile_index(client, 'user/prodindex'):
+    with volatile_index(devpi, 'user/prodindex'):
         devpi.remove('broken_package==0.1.0')
 
 In order to simplify the testing of such plumbing scripts, it ships with a simple context manager for starting and stopping devpi servers in tests.
