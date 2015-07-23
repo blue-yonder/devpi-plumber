@@ -119,11 +119,9 @@ class DevpiCommandWrapper(object):
         :param user: Only list indices of this user.
         :return: List of indices in format ``<user>/<index>``.
         """
-        return [
-            line.split()[0]
-            for line in self._execute('use', '-l').splitlines()
-            if user is None or line.startswith(user + '/')
-        ]
+        def user_filter(line):
+            return (user is None) or line.startswith(user + '/')
+        return [l.split()[0] for l in self._execute('use', '-l').splitlines() if user_filter(l)]
 
     def remove(self, *args):
         return self._execute('remove', '-y', *args)
