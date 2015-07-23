@@ -152,8 +152,8 @@ def volatile_index(client, index, force_volatile=True):
     if not is_volatile and not force_volatile:
         raise DevpiClientError('Index {} is not volatile.'.format(index))
 
-    client.modify_index(index, 'volatile=True')
+    client.modify_index(index, volatile=True)
     try:
         yield
     finally:
-        client.modify_index(index, 'volatile={}'.format(is_volatile))
+        client.modify_index(index, volatile=is_volatile)
