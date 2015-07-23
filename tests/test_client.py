@@ -1,11 +1,8 @@
 import requests
 from unittest import TestCase
 
-from mock import Mock
-from six import assertRaisesRegex
-
 from devpi_plumber.server import TestServer
-from devpi_plumber.client import DevpiClientError, DevpiCommandWrapper, volatile_index
+from devpi_plumber.client import DevpiClientError, volatile_index
 
 
 class ClientTest(TestCase):
