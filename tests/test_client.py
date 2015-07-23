@@ -9,7 +9,9 @@ from devpi_plumber.client import DevpiClientError, DevpiCommandWrapper, volatile
 
 
 class ClientTest(TestCase):
-
+    """
+    Assert that the plumber devpi client behaves as expected
+    """
     def test_login_success(self):
         users = { "user": {"password": "secret"} }
 
