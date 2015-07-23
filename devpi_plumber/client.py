@@ -92,14 +92,12 @@ class DevpiCommandWrapper(object):
 
     def upload(self, path, directory=False, dry_run=False):
         args = ['upload']
-
         if dry_run:
             args.append('--dry-run')
-
         if directory:
-            args.extend(['--from-dir', path])
-        else:
-            args.append(path)
+            args.append('--from-dir')
+
+        args.append(path)
 
         return self._execute(*args)
 
