@@ -22,12 +22,12 @@ class DevpiClientError(Exception):
 
 
 @contextlib.contextmanager
-def DevpiClient(url, user=None, password=None):
+def DevpiClient(url, user=None, password=None, client_cert=None):
     """
     Yields a light wrapper object around the devpi client.
     """
     with temporary_dir() as client_dir:
-        wrapper = DevpiCommandWrapper(url, client_dir)
+        wrapper = DevpiCommandWrapper(url, client_dir, client_cert=client_cert)
 
         if user and password is not None:
             wrapper.login(user, password)
@@ -37,10 +37,11 @@ def DevpiClient(url, user=None, password=None):
 
 class DevpiCommandWrapper(object):
 
-    def __init__(self, url, client_dir):
+    def __init__(self, url, client_dir, client_cert=None):
         self._url = url
         self._server_url = self._extract_server_url(url)
         self._client_dir = client_dir
+        self._client_cert = client_cert
         self._execute('use', url)
 
     def _extract_server_url(self, url):
@@ -50,6 +51,8 @@ class DevpiCommandWrapper(object):
     def _execute(self, *args, **kwargs):
         kwargs = OrderedDict(kwargs)
         kwargs.update({'--clientdir': self._client_dir})
+        if args[0] == 'use' and self._client_cert:
+            kwargs.update({'--client-cert': self._client_cert})
 
         args = ['devpi'] + list(args) + ['{}={}'.format(k, v) for k, v in iteritems(kwargs)]
 
