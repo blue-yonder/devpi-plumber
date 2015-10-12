@@ -1,7 +1,7 @@
 devpi-client==2.3.1
 devpi-server==2.3.1
 twitter.common.contextutil==0.3.4
-six==1.9.0
+six==1.10.0
 
 nose
 nose-progressive
