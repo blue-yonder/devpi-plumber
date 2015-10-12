@@ -6,4 +6,4 @@ six==1.9.0
 nose
 nose-progressive
 mock
-coverage
+coverage<4
