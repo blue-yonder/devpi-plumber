@@ -38,7 +38,7 @@ def TestServer(users={}, indices={}, config={}):
 
 @contextlib.contextmanager
 def DevpiServer(options):
-        args = ['--{}={}'.format(k, v) for k,v in iteritems(options)]
+        args = ['--{}={}'.format(k, v) for k, v in iteritems(options)]
         subprocess.check_output(['devpi-server', '--start'] + args, stderr=subprocess.STDOUT)
         try:
             yield 'http://localhost:{}'.format(options['port'])
@@ -58,7 +58,7 @@ def prefill_serverdir(server_options):
     serverdir_new = server_options['serverdir']
 
     if 'master-url' in server_options:
-        return # always has to be a fresh sync
+        return  # always has to be a fresh sync
     elif os.path.exists(serverdir_cache):
         shutil.rmtree(serverdir_new)
         shutil.copytree(serverdir_cache, serverdir_new)
