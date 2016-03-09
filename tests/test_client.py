@@ -117,7 +117,7 @@ class ClientTest(TestCase):
             devpi.use("user/index")
             devpi.upload("tests/fixture/package/dist/test-package-0.1.tar.gz", dry_run=True)
 
-            self.assertIn('no such project', requests.get(devpi.server_url + "/user/index/+simple/test_package").text)
+            self.assertIn('404 Not Found', requests.get(devpi.server_url + "/user/index/+simple/test_package").text)
 
     def test_list_existing_package(self):
         users = { "user": {"password": "secret"} }
