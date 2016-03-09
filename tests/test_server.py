@@ -6,7 +6,7 @@ from devpi_plumber.server import TestServer
 
 class ServerTest(TestCase):
     """
-    Smoke test that the provided TestServer works expectedh
+    Smoke test that the provided TestServer works expected.
     """
     def test_server_start(self):
         with TestServer() as devpi:

@@ -7,7 +7,7 @@ from devpi_plumber.client import DevpiClientError, volatile_index
 
 class ClientTest(TestCase):
     """
-    Assert that the plumber devpi client behaves as expected
+    Assert that the plumber devpi client behaves as expected.
     """
     def test_login_success(self):
         users = { "user": {"password": "secret"} }
