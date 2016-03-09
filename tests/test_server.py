@@ -34,3 +34,8 @@ class ServerTest(TestCase):
             self.assertEqual(200, requests.get(devpi.url + '/user1/index1').status_code)
             self.assertEqual(200, requests.get(devpi.url + '/user1/index2').status_code)
             self.assertEqual(404, requests.get(devpi.url + '/user1/index3').status_code)
+
+    def test_logwatch(self):
+        with self.assertRaises(RuntimeError):
+            with TestServer(fail_on_output=['ERROR']) as devpi:
+                self.assertEqual(404, requests.get(devpi.url + '/doesnt/exist').status_code)

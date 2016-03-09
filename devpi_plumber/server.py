@@ -11,7 +11,7 @@ from devpi_plumber.client import DevpiClient
 
 
 @contextlib.contextmanager
-def TestServer(users={}, indices={}, config={}):
+def TestServer(users={}, indices={}, config={}, fail_on_output=['Traceback']):
     """
     Starts a devpi server to be used within tests.
     """
@@ -33,7 +33,12 @@ def TestServer(users={}, indices={}, config={}):
                 for index, kwargs in iteritems(indices):
                     client.create_index(index, **kwargs)
 
-                yield client # Server is wiped on return. No need to cleanup users and indices
+                yield client
+
+            with open(server_dir + '/.xproc/devpi-server/xprocess.log') as f:
+                logs = f.read()
+                if any((message in logs) for message in fail_on_output):
+                    raise RuntimeError(logs)
 
 
 @contextlib.contextmanager
