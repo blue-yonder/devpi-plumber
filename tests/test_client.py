@@ -1,8 +1,20 @@
+from contextlib import contextmanager
+import os
 import requests
 from unittest import TestCase
 
 from devpi_plumber.server import TestServer
 from devpi_plumber.client import DevpiClientError, volatile_index
+
+
+@contextmanager
+def cd(path):
+    old_dir = os.getcwd()
+    os.chdir(path)
+    try:
+        yield
+    finally:
+        os.chdir(old_dir)
 
 
 class ClientTest(TestCase):
@@ -118,6 +130,16 @@ class ClientTest(TestCase):
             devpi.upload("tests/fixture/package/dist/test-package-0.1.tar.gz", dry_run=True)
 
             self.assertIn('404 Not Found', requests.get(devpi.server_url + "/user/index/+simple/test_package").text)
+
+    def test_upload_with_docs(self):
+        users = {"user": {"password": "secret"}}
+        indices = {"user/index": {}}
+
+        with TestServer(users, indices) as devpi:
+            devpi.login("user", "secret")
+            devpi.use("user/index")
+            with cd('tests/fixture/package'):
+                devpi.upload(with_docs=True)
 
     def test_list_existing_package(self):
         users = { "user": {"password": "secret"} }

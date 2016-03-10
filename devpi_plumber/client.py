@@ -85,14 +85,17 @@ class DevpiCommandWrapper(object):
     def modify_index(self, index, *args, **kwargs):
         return self._execute('index', index, *args, **kwargs)
 
-    def upload(self, path, directory=False, dry_run=False):
+    def upload(self, path=None, directory=False, dry_run=False, with_docs=False):
         args = ['upload']
         if dry_run:
             args.append('--dry-run')
         if directory:
             args.append('--from-dir')
+        if with_docs:
+            args.append('--with-docs')
 
-        args.append(path)
+        if path:
+            args.append(path)
 
         return self._execute(*args)
 
