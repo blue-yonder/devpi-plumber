@@ -129,7 +129,7 @@ class ClientTest(TestCase):
             devpi.use("user/index")
             devpi.upload("tests/fixture/package/dist/test-package-0.1.tar.gz", dry_run=True)
 
-            self.assertIn('404 Not Found', requests.get(devpi.server_url + "/user/index/+simple/test_package").text)
+            self.assertIn('Not Found', requests.get(devpi.server_url + "/user/index/+simple/test_package").text)
 
     def test_upload_with_docs(self):
         users = {"user": {"password": "secret"}}
