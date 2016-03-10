@@ -6,4 +6,5 @@ six==1.10.0
 nose
 nose-progressive
 mock
+sphinx
 coverage
