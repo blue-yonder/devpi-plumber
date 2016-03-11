@@ -43,13 +43,12 @@ def TestServer(users={}, indices={}, config={}, fail_on_output=['Traceback']):
 
 @contextlib.contextmanager
 def DevpiServer(options):
-    opts = ['--{}={}'.format(k, v) for k, v in iteritems(options) if v]
-    flags = ['--{}'.format(k) for k, v in iteritems(options) if not v]
-    subprocess.check_output(['devpi-server', '--start'] + opts + flags, stderr=subprocess.STDOUT)
-    try:
-        yield 'http://localhost:{}'.format(options['port'])
-    finally:
-        subprocess.check_output(['devpi-server', '--stop'] + opts + flags, stderr=subprocess.STDOUT)
+        args = ['--{}={}'.format(k, v) for k, v in iteritems(options)]
+        subprocess.check_output(['devpi-server', '--start'] + args, stderr=subprocess.STDOUT)
+        try:
+            yield 'http://localhost:{}'.format(options['port'])
+        finally:
+            subprocess.check_output(['devpi-server', '--stop'] + args, stderr=subprocess.STDOUT)
 
 
 serverdir_cache = '/tmp/devpi-plumber-cache'
