@@ -35,10 +35,10 @@ def TestServer(users={}, indices={}, config={}, fail_on_output=['Traceback']):
 
                 yield client
 
-            with open(server_dir + '/.xproc/devpi-server/xprocess.log') as f:
-                logs = f.read()
-                if any((message in logs) for message in fail_on_output):
-                    raise RuntimeError(logs)
+        with open(server_dir + '/.xproc/devpi-server/xprocess.log') as f:
+            logs = f.read()
+            if any((message in logs) for message in fail_on_output):
+                raise RuntimeError(logs)
 
 
 @contextlib.contextmanager
@@ -50,6 +50,7 @@ def DevpiServer(options):
         yield 'http://localhost:{}'.format(options['port'])
     finally:
         subprocess.check_output(['devpi-server', '--stop'] + opts + flags, stderr=subprocess.STDOUT)
+
 
 serverdir_cache = '/tmp/devpi-plumber-cache'
 atexit.register(shutil.rmtree, serverdir_cache, ignore_errors=True)
