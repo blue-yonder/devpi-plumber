@@ -117,7 +117,7 @@ class ClientTest(TestCase):
         with TestServer(users, indices) as devpi:
             devpi.login("user", "secret")
             devpi.use("user/index")
-            devpi.upload("tests/fixture/package/", directory=True)
+            devpi.upload("tests/fixture/dist/", directory=True)
 
             self.assertEqual(200, requests.get(devpi.server_url + "/user/index/+simple/test_package").status_code)
 
