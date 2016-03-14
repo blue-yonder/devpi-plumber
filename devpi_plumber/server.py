@@ -1,13 +1,12 @@
-import os
-import shutil
 import atexit
 import contextlib
+import os
+import shutil
 import subprocess
 
+from devpi_plumber.client import DevpiClient
 from six import iteritems
 from twitter.common.contextutil import temporary_dir
-
-from devpi_plumber.client import DevpiClient
 
 
 @contextlib.contextmanager

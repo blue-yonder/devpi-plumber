@@ -1,14 +1,14 @@
+import contextlib
+import logging
 import re
 import sys
-import logging
-import contextlib
 from collections import OrderedDict
 
-from six import iteritems, StringIO
-from six.moves.urllib.parse import urlsplit, urlunsplit
 from devpi.main import main as devpi
+from six import StringIO, iteritems
 from twitter.common.contextutil import mutable_sys, temporary_dir
 
+from six.moves.urllib.parse import urlsplit, urlunsplit
 
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("devpi").setLevel(logging.WARNING)
