@@ -44,8 +44,8 @@ def TestServer(users={}, indices={}, config={}, fail_on_output=['Traceback']):
 def DevpiServer(options):
     opts = ['--{}={}'.format(k, v) for k, v in iteritems(options) if v is not None]
     flags = ['--{}'.format(k) for k, v in iteritems(options) if v is None]
-    subprocess.check_output(['devpi-server', '--start'] + opts + flags, stderr=subprocess.STDOUT)
     try:
+        subprocess.check_output(['devpi-server', '--start'] + opts + flags, stderr=subprocess.STDOUT)
         yield 'http://localhost:{}'.format(options['port'])
     finally:
         subprocess.check_output(['devpi-server', '--stop'] + opts + flags, stderr=subprocess.STDOUT)
