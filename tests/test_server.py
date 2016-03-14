@@ -1,6 +1,6 @@
-import requests
 from unittest import TestCase
 
+import requests
 from devpi_plumber.server import TestServer
 
 

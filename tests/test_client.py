@@ -1,10 +1,10 @@
-from contextlib import contextmanager
 import os
-import requests
+from contextlib import contextmanager
 from unittest import TestCase
 
-from devpi_plumber.server import TestServer
+import requests
 from devpi_plumber.client import DevpiClientError, volatile_index
+from devpi_plumber.server import TestServer
 
 
 @contextmanager
