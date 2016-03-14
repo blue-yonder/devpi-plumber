@@ -8,6 +8,7 @@ class ServerTest(TestCase):
     """
     Smoke test that the provided TestServer works expected.
     """
+
     def test_server_start(self):
         with TestServer() as devpi:
             self.assertEqual(200, requests.get(devpi.url).status_code)
