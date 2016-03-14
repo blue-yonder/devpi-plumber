@@ -1,20 +1,9 @@
-import os
-from contextlib import contextmanager
+import requests
+from twitter.common.contextutil import pushd
 from unittest import TestCase
 
-import requests
 from devpi_plumber.client import DevpiClientError, volatile_index
 from devpi_plumber.server import TestServer
-
-
-@contextmanager
-def cd(path):
-    old_dir = os.getcwd()
-    os.chdir(path)
-    try:
-        yield
-    finally:
-        os.chdir(old_dir)
 
 
 class ClientTest(TestCase):
@@ -139,7 +128,7 @@ class ClientTest(TestCase):
         with TestServer(users, indices) as devpi:
             devpi.login("user", "secret")
             devpi.use("user/index")
-            with cd('tests/fixture/package'):
+            with pushd('tests/fixture/package'):
                 devpi.upload(with_docs=True)
 
     def test_list_existing_package(self):

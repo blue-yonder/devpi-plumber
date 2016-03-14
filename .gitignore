@@ -8,5 +8,6 @@ atlassian-ide-plugin.xml
 venv*/
 build
 tests/fixture/package/dist
+dist/
 
 README.html
