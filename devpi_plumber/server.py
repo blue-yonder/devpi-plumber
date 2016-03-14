@@ -18,8 +18,8 @@ def TestServer(users={}, indices={}, config={}, fail_on_output=['Traceback']):
     with temporary_dir() as server_dir:
 
         server_options = {
-            'port' : 2414,
-            'serverdir' : server_dir}
+            'port': 2414,
+            'serverdir': server_dir}
         server_options.update(config)
 
         prefill_serverdir(server_options)

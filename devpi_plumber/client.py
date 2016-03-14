@@ -51,7 +51,7 @@ class DevpiCommandWrapper(object):
         kwargs = OrderedDict(kwargs)
         kwargs.update({'--clientdir': self._client_dir})
 
-        args = ['devpi'] + list(args) + ['{}={}'.format(k, v) for k,v in iteritems(kwargs)]
+        args = ['devpi'] + list(args) + ['{}={}'.format(k, v) for k, v in iteritems(kwargs)]
 
         with mutable_sys():
             sys.stdout = sys.stderr = output = StringIO()
@@ -64,7 +64,7 @@ class DevpiCommandWrapper(object):
     def use(self, *args):
         url = '/'.join([self._server_url] + list(args))
         result = self._execute('use', url)
-        self._url = url # to be exception save, only updated now
+        self._url = url  # to be exception save, only updated now
         return result
 
     def login(self, user, password):
