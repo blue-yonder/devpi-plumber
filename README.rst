@@ -50,7 +50,7 @@ In order to simplify the testing of such plumbing scripts, it ships with a simpl
         'user': {'password': 'secret'},
     }
     indices = {
-        'user/prodindex': { },
+        'user/prodindex': {},
         'user/testindex': {'bases': 'user/prodindex'},
     }
     with TestServer(users, indices) as devpi:
