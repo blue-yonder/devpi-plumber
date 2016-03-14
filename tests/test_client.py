@@ -105,7 +105,7 @@ class ClientTest(TestCase):
         with TestServer(users, indices) as devpi:
             devpi.login("user", "secret")
             devpi.use("user/index")
-            devpi.upload("tests/fixture/package/dist/test-package-0.1.tar.gz")
+            devpi.upload("tests/fixture/dist/test-package-0.1.tar.gz")
 
             self.assertEqual(200, requests.get(devpi.server_url + "/user/index/+simple/test_package").status_code)
 
@@ -127,7 +127,7 @@ class ClientTest(TestCase):
         with TestServer(users, indices) as devpi:
             devpi.login("user", "secret")
             devpi.use("user/index")
-            devpi.upload("tests/fixture/package/dist/test-package-0.1.tar.gz", dry_run=True)
+            devpi.upload("tests/fixture/dist/test-package-0.1.tar.gz", dry_run=True)
 
             self.assertIn('Not Found', requests.get(devpi.server_url + "/user/index/+simple/test_package").text)
 
@@ -148,9 +148,9 @@ class ClientTest(TestCase):
         with TestServer(users, indices) as devpi:
             devpi.login("user", "secret")
             devpi.use("user/index")
-            devpi.upload("tests/fixture/package/", directory=True)
+            devpi.upload("tests/fixture/dist/", directory=True)
 
-            expected = ['test_package-0.1-cp34-cp34m-linux_x86_64.whl', 'test-package-0.1.tar.gz']
+            expected = ['test_package-0.1-py2.py3-none-any.whl', 'test-package-0.1.tar.gz']
             actual = devpi.list("test_package==0.1")
 
             self.assertEqual(len(actual), len(expected))
@@ -187,7 +187,7 @@ class ClientTest(TestCase):
         with TestServer(users, indices) as devpi:
             devpi.login("user", "secret")
             devpi.use("user/index")
-            devpi.upload("tests/fixture/package/", directory=True)
+            devpi.upload("tests/fixture/dist/", directory=True)
 
             devpi.remove("test_package==0.1")
 
@@ -200,7 +200,7 @@ class ClientTest(TestCase):
         with TestServer(users, indices) as devpi:
             devpi.login("user", "secret")
             devpi.use("user/index")
-            devpi.upload("tests/fixture/package/", directory=True)
+            devpi.upload("tests/fixture/dist/", directory=True)
 
             devpi.remove("test_package==0.2")
 

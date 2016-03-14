@@ -7,6 +7,6 @@ atlassian-ide-plugin.xml
 *.pyc
 venv*/
 build
-dist
+tests/fixture/package/dist
 
 README.html
