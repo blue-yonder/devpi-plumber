@@ -34,10 +34,20 @@ def TestServer(users={}, indices={}, config={}, fail_on_output=['Traceback']):
 
                 yield client
 
-        with open(server_dir + '/.xproc/devpi-server/xprocess.log') as f:
-            logs = f.read()
-            if any((message in logs) for message in fail_on_output):
-                raise RuntimeError(logs)
+        _assert_no_logged_errors(fail_on_output, server_dir + '/.xproc/devpi-server/xprocess.log')
+
+
+def _assert_no_logged_errors(fail_on_output, logfile):
+    with open(logfile) as f:
+        logs = f.read()
+    for message in fail_on_output:
+        if message not in logs:
+            continue
+        if message == 'Traceback' and logs.count(message) == logs.count('ValueError: I/O operation on closed file'):
+            # Heuristic to ignore false positives on the shutdown of replicas
+            # The master might still be busy serving root/pypi/simple for a stopping replica
+            continue
+        raise RuntimeError(logs)
 
 
 @contextlib.contextmanager
