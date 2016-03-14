@@ -1,10 +1,10 @@
-from contextlib import contextmanager
 import os
-import requests
+from contextlib import contextmanager
 from unittest import TestCase
 
-from devpi_plumber.server import TestServer
+import requests
 from devpi_plumber.client import DevpiClientError, volatile_index
+from devpi_plumber.server import TestServer
 
 
 @contextmanager
@@ -21,15 +21,16 @@ class ClientTest(TestCase):
     """
     Assert that the plumber devpi client behaves as expected.
     """
+
     def test_login_success(self):
-        users = { "user": {"password": "secret"} }
+        users = {"user": {"password": "secret"}}
 
         with TestServer(users) as devpi:
             self.assertIn("credentials valid", devpi.login("user", "secret"))
             self.assertEquals("user", devpi.user)
 
     def test_login_error(self):
-        users = { "user": {"password": "secret"} }
+        users = {"user": {"password": "secret"}}
 
         with TestServer(users) as devpi:
             with self.assertRaisesRegexp(DevpiClientError, "401 Unauthorized"):
@@ -57,29 +58,29 @@ class ClientTest(TestCase):
             self.assertEqual(200, requests.get(devpi.server_url + "/user").status_code)
 
     def test_modify_user(self):
-        users = { "user": {"password": "secret"} }
+        users = {"user": {"password": "secret"}}
 
         with TestServer(users) as devpi:
             devpi.modify_user("user", password="new secret")
             self.assertIn("credentials valid", devpi.login("user", "new secret"))
 
     def test_create_index(self):
-        users = { "user": {"password": "secret"} }
+        users = {"user": {"password": "secret"}}
 
         with TestServer(users) as devpi:
             devpi.create_index("user/index")
             self.assertEqual(200, requests.get(devpi.server_url + "/user/index").status_code)
 
     def test_modify_index(self):
-        users = { "user": {"password": "secret"} }
-        indices = { "user/index": { "bases": ""} }
+        users = {"user": {"password": "secret"}}
+        indices = {"user/index": {"bases": ""}}
 
         with TestServer(users, indices) as devpi:
             self.assertIn("changing bases", devpi.modify_index("user/index", bases="root/pypi"))
 
     def test_list_indices(self):
-        users = { "user": {"password": "secret"} }
-        indices = { "user/index": {} }
+        users = {"user": {"password": "secret"}}
+        indices = {"user/index": {}}
 
         with TestServer(users, indices) as devpi:
             listed = devpi.list_indices()
@@ -88,8 +89,8 @@ class ClientTest(TestCase):
             self.assertIn('user/index', listed)
 
     def test_list_indices_by_user(self):
-        users = { "user": {"password": "secret"} }
-        indices = { "user/index": {}, "user/index2": {} }
+        users = {"user": {"password": "secret"}}
+        indices = {"user/index": {}, "user/index2": {}}
 
         with TestServer(users, indices) as devpi:
             listed = devpi.list_indices(user='root')
@@ -99,8 +100,8 @@ class ClientTest(TestCase):
             self.assertSetEqual(set(['user/index', 'user/index2']), set(listed))
 
     def test_upload_file(self):
-        users = { "user": {"password": "secret"} }
-        indices = { "user/index": {} }
+        users = {"user": {"password": "secret"}}
+        indices = {"user/index": {}}
 
         with TestServer(users, indices) as devpi:
             devpi.login("user", "secret")
@@ -110,8 +111,8 @@ class ClientTest(TestCase):
             self.assertEqual(200, requests.get(devpi.server_url + "/user/index/+simple/test_package").status_code)
 
     def test_upload_folder(self):
-        users = { "user": {"password": "secret"} }
-        indices = { "user/index": {} }
+        users = {"user": {"password": "secret"}}
+        indices = {"user/index": {}}
 
         with TestServer(users, indices) as devpi:
             devpi.login("user", "secret")
@@ -121,8 +122,8 @@ class ClientTest(TestCase):
             self.assertEqual(200, requests.get(devpi.server_url + "/user/index/+simple/test_package").status_code)
 
     def test_upload_dry_run(self):
-        users = { "user": {"password": "secret"} }
-        indices = { "user/index": {} }
+        users = {"user": {"password": "secret"}}
+        indices = {"user/index": {}}
 
         with TestServer(users, indices) as devpi:
             devpi.login("user", "secret")
@@ -142,8 +143,8 @@ class ClientTest(TestCase):
                 devpi.upload(with_docs=True)
 
     def test_list_existing_package(self):
-        users = { "user": {"password": "secret"} }
-        indices = { "user/index": {} }
+        users = {"user": {"password": "secret"}}
+        indices = {"user/index": {}}
 
         with TestServer(users, indices) as devpi:
             devpi.login("user", "secret")
@@ -158,8 +159,8 @@ class ClientTest(TestCase):
                 self.assertTrue(any(entry.endswith(package) for package in expected))
 
     def test_list_nonexisting_package(self):
-        users = { "user": {"password": "secret"} }
-        indices = { "user/index": {} }
+        users = {"user": {"password": "secret"}}
+        indices = {"user/index": {}}
 
         with TestServer(users, indices) as devpi:
             devpi.use("user/index")
@@ -167,22 +168,22 @@ class ClientTest(TestCase):
             self.assertEqual([], devpi.list("test_package==0.1"))
 
     def test_list_error(self):
-        users = { "user": {"password": "secret"} }
-        indices = { "user/index": {} }
+        users = {"user": {"password": "secret"}}
+        indices = {"user/index": {}}
 
         with TestServer(users, indices) as devpi:
             with self.assertRaisesRegexp(DevpiClientError, "not connected to an index"):
                 devpi.list("test_package==0.1")
 
     def test_replica(self):
-        with TestServer(config={'port':2414}) as devpi:
-            with TestServer(config={'master-url':devpi.server_url, 'port' : 2413}) as replica:
+        with TestServer(config={'port': 2414}) as devpi:
+            with TestServer(config={'master-url': devpi.server_url, 'port': 2413}) as replica:
 
                 self.assertNotEqual(devpi.server_url, replica.server_url)
 
     def test_remove(self):
-        users = { "user": {"password": "secret"} }
-        indices = { "user/index": {} }
+        users = {"user": {"password": "secret"}}
+        indices = {"user/index": {}}
 
         with TestServer(users, indices) as devpi:
             devpi.login("user", "secret")
@@ -194,8 +195,8 @@ class ClientTest(TestCase):
             self.assertListEqual([], devpi.list("test_package==0.1"))
 
     def test_remove_invalid(self):
-        users = { "user": {"password": "secret"} }
-        indices = { "user/index": {} }
+        users = {"user": {"password": "secret"}}
+        indices = {"user/index": {}}
 
         with TestServer(users, indices) as devpi:
             devpi.login("user", "secret")

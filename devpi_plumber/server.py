@@ -1,13 +1,12 @@
-import os
-import shutil
 import atexit
 import contextlib
+import os
+import shutil
 import subprocess
 
+from devpi_plumber.client import DevpiClient
 from six import iteritems
 from twitter.common.contextutil import temporary_dir
-
-from devpi_plumber.client import DevpiClient
 
 
 @contextlib.contextmanager
@@ -18,8 +17,8 @@ def TestServer(users={}, indices={}, config={}, fail_on_output=['Traceback']):
     with temporary_dir() as server_dir:
 
         server_options = {
-            'port' : 2414,
-            'serverdir' : server_dir}
+            'port': 2414,
+            'serverdir': server_dir}
         server_options.update(config)
 
         prefill_serverdir(server_options)
@@ -35,21 +34,32 @@ def TestServer(users={}, indices={}, config={}, fail_on_output=['Traceback']):
 
                 yield client
 
-            with open(server_dir + '/.xproc/devpi-server/xprocess.log') as f:
-                logs = f.read()
-                if any((message in logs) for message in fail_on_output):
-                    raise RuntimeError(logs)
+        _assert_no_logged_errors(fail_on_output, server_dir + '/.xproc/devpi-server/xprocess.log')
+
+
+def _assert_no_logged_errors(fail_on_output, logfile):
+    with open(logfile) as f:
+        logs = f.read()
+    for message in fail_on_output:
+        if message not in logs:
+            continue
+        if message == 'Traceback' and logs.count(message) == logs.count('ValueError: I/O operation on closed file'):
+            # Heuristic to ignore false positives on the shutdown of replicas
+            # The master might still be busy serving root/pypi/simple for a stopping replica
+            continue
+        raise RuntimeError(logs)
 
 
 @contextlib.contextmanager
 def DevpiServer(options):
-    opts = ['--{}={}'.format(k, v) for k, v in iteritems(options) if v]
-    flags = ['--{}'.format(k) for k, v in iteritems(options) if not v]
-    subprocess.check_output(['devpi-server', '--start'] + opts + flags, stderr=subprocess.STDOUT)
+    opts = ['--{}={}'.format(k, v) for k, v in iteritems(options) if v is not None]
+    flags = ['--{}'.format(k) for k, v in iteritems(options) if v is None]
     try:
+        subprocess.check_output(['devpi-server', '--start'] + opts + flags, stderr=subprocess.STDOUT)
         yield 'http://localhost:{}'.format(options['port'])
     finally:
         subprocess.check_output(['devpi-server', '--stop'] + opts + flags, stderr=subprocess.STDOUT)
+
 
 serverdir_cache = '/tmp/devpi-plumber-cache'
 atexit.register(shutil.rmtree, serverdir_cache, ignore_errors=True)
