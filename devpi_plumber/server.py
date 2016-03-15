@@ -10,7 +10,7 @@ from twitter.common.contextutil import temporary_dir
 
 
 @contextlib.contextmanager
-def TestServer(users={}, indices={}, config={}, fail_on_output=['Traceback']):
+def TestServer(users={}, indices={}, config={}, fail_on_output=['Traceback'], import_=None, export=None):
     """
     Starts a devpi server to be used within tests.
     """
@@ -21,7 +21,12 @@ def TestServer(users={}, indices={}, config={}, fail_on_output=['Traceback']):
             'serverdir': server_dir}
         server_options.update(config)
 
-        prefill_serverdir(server_options)
+        if import_:
+            import_options = dict(server_options)
+            import_options.update({'import': import_})
+            devpi_server_command(**import_options)
+        else:
+            prefill_serverdir(server_options)
 
         with DevpiServer(server_options) as url:
             with DevpiClient(url, 'root', '') as client:
@@ -33,6 +38,9 @@ def TestServer(users={}, indices={}, config={}, fail_on_output=['Traceback']):
                     client.create_index(index, **kwargs)
 
                 yield client
+
+        if export:
+            devpi_server_command(export=export, **server_options)
 
         _assert_no_logged_errors(fail_on_output, server_dir + '/.xproc/devpi-server/xprocess.log')
 
@@ -52,13 +60,17 @@ def _assert_no_logged_errors(fail_on_output, logfile):
 
 @contextlib.contextmanager
 def DevpiServer(options):
-    opts = ['--{}={}'.format(k, v) for k, v in iteritems(options) if v is not None]
-    flags = ['--{}'.format(k) for k, v in iteritems(options) if v is None]
     try:
-        subprocess.check_output(['devpi-server', '--start'] + opts + flags, stderr=subprocess.STDOUT)
+        devpi_server_command(start=None, **options)
         yield 'http://localhost:{}'.format(options['port'])
     finally:
-        subprocess.check_output(['devpi-server', '--stop'] + opts + flags, stderr=subprocess.STDOUT)
+        devpi_server_command(stop=None, **options)
+
+
+def devpi_server_command(**options):
+    opts = ['--{}={}'.format(k, v) for k, v in iteritems(options) if v is not None]
+    flags = ['--{}'.format(k) for k, v in iteritems(options) if v is None]
+    subprocess.check_output(['devpi-server'] + opts + flags, stderr=subprocess.STDOUT)
 
 
 serverdir_cache = '/tmp/devpi-plumber-cache'

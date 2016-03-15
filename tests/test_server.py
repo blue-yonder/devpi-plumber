@@ -1,6 +1,7 @@
+import requests
+from twitter.common.contextutil import temporary_dir
 from unittest import TestCase
 
-import requests
 from devpi_plumber.server import TestServer
 
 
@@ -40,3 +41,10 @@ class ServerTest(TestCase):
         with self.assertRaises(RuntimeError):
             with TestServer(fail_on_output=['ERROR']) as devpi:
                 self.assertEqual(404, requests.get(devpi.url + '/doesnt/exist').status_code)
+
+    def test_import_export(self):
+        with temporary_dir() as export_dir:
+            with TestServer(export=export_dir) as devpi:
+                self.assertEqual(200, requests.get(devpi.url).status_code)
+            with TestServer(import_=export_dir) as devpi:
+                self.assertEqual(200, requests.get(devpi.url).status_code)
