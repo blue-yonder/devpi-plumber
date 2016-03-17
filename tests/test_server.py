@@ -2,7 +2,7 @@ import requests
 from twitter.common.contextutil import temporary_dir
 from unittest import TestCase
 
-from devpi_plumber.server import TestServer
+from devpi_plumber.server import TestServer, export, import_
 
 
 class ServerTest(TestCase):
@@ -44,7 +44,12 @@ class ServerTest(TestCase):
 
     def test_import_export(self):
         with temporary_dir() as export_dir:
-            with TestServer(export=export_dir) as devpi:
-                self.assertEqual(200, requests.get(devpi.url).status_code)
-            with TestServer(import_=export_dir) as devpi:
-                self.assertEqual(200, requests.get(devpi.url).status_code)
+            with temporary_dir() as server_dir:
+                with TestServer(serverdir=server_dir) as devpi:
+                    self.assertEqual(200, requests.get(devpi.url).status_code)
+                export(server_dir, export_dir)
+
+            with temporary_dir() as server_dir:
+                import_(server_dir, export_dir)
+                with TestServer(serverdir=server_dir) as devpi:
+                    self.assertEqual(200, requests.get(devpi.url).status_code)

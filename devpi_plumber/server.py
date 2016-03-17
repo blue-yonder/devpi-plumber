@@ -10,25 +10,19 @@ from twitter.common.contextutil import temporary_dir
 
 
 @contextlib.contextmanager
-def TestServer(users={}, indices={}, config={}, fail_on_output=['Traceback'], import_=None, export=None):
+def TestServer(users={}, indices={}, config={}, fail_on_output=['Traceback'], serverdir=None):
     """
     Starts a devpi server to be used within tests.
     """
-    with temporary_dir() as server_dir:
+    server_options = {
+        'port': 2414,
+    }
+    server_options.update(config)
 
-        server_options = {
-            'port': 2414,
-            'serverdir': server_dir}
-        server_options.update(config)
+    @contextlib.contextmanager
+    def run_server(options):
 
-        if import_:
-            import_options = dict(server_options)
-            import_options.update({'import': import_})
-            devpi_server_command(**import_options)
-        else:
-            prefill_serverdir(server_options)
-
-        with DevpiServer(server_options) as url:
+        with DevpiServer(options) as url:
             with DevpiClient(url, 'root', '') as client:
 
                 for user, kwargs in iteritems(users):
@@ -39,10 +33,26 @@ def TestServer(users={}, indices={}, config={}, fail_on_output=['Traceback'], im
 
                 yield client
 
-        if export:
-            devpi_server_command(export=export, **server_options)
+        _assert_no_logged_errors(fail_on_output, options['serverdir'] + '/.xproc/devpi-server/xprocess.log')
 
-        _assert_no_logged_errors(fail_on_output, server_dir + '/.xproc/devpi-server/xprocess.log')
+    if not serverdir:
+        with temporary_dir() as serverdir:
+            server_options.update(serverdir=serverdir)
+            prefill_serverdir(server_options)
+            with run_server(server_options) as devpi:
+                yield devpi
+    else:
+        server_options.update(serverdir=serverdir)
+        with run_server(server_options) as devpi:
+            yield devpi
+
+
+def import_(serverdir, importdir):
+    devpi_server_command(serverdir=serverdir, **{'import': importdir})
+
+
+def export(serverdir, exportdir):
+    devpi_server_command(serverdir=serverdir, export=exportdir)
 
 
 def _assert_no_logged_errors(fail_on_output, logfile):
