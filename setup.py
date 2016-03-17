@@ -8,7 +8,7 @@ with open('README.rst') as f:
 
 setup(
     name='devpi-plumber',
-    version='0.2.10',
+    version='0.2.11',
     packages=find_packages(exclude=['tests']),
     author='Stephan Erb',
     author_email='stephan.erb@blue-yonder.com',
