@@ -48,13 +48,18 @@ class DevpiCommandWrapper(object):
         parts = urlsplit(url)
         return urlunsplit((parts.scheme, parts.netloc, '', '', ''))
 
-    def _execute(self, *args, **kwargs):
-        kwargs = OrderedDict(kwargs)
+    def _create_command(self, *args, **kwargs):
+        # sort to make deterministic for tests
+        kwargs = OrderedDict(sorted(kwargs.items(), key=lambda t: t[0]))
         kwargs.update({'--clientdir': self._client_dir})
         if args[0] == 'use' and self._client_cert:
             kwargs.update({'--client-cert': self._client_cert})
 
-        args = ['devpi'] + list(args) + ['{}={}'.format(k, v) for k, v in iteritems(kwargs)]
+        return ['devpi'] + list(args) + ['{}={}'.format(k, v)
+                                         for k, v in iteritems(kwargs)]
+
+    def _execute(self, *args, **kwargs):
+        args = self._create_command(*args, **kwargs)
 
         with mutable_sys():
             sys.stdout = sys.stderr = output = StringIO()
