@@ -258,7 +258,7 @@ class DevpiCommandWrapperTest(TestCase):
         self.assertEqual(
             dcw.use('hans/prod'),
             ['devpi', 'use', 'http://localhost/hans/prod',
-             '--clientdir=/example', '--client-cert=/path/to/cert'])
+             '--client-cert=/path/to/cert', '--clientdir=/example'])
 
     def test_login(self):
         dcw = DevpiCommandWrapper('http://localhost/', '/example')

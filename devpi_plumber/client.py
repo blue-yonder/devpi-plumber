@@ -52,8 +52,6 @@ class DevpiCommandWrapper(object):
         # sort to make deterministic for tests
         kwargs = OrderedDict(sorted(kwargs.items(), key=lambda t: t[0]))
         kwargs.update({'--clientdir': self._client_dir})
-        if args[0] == 'use' and self._client_cert:
-            kwargs.update({'--client-cert': self._client_cert})
 
         return ['devpi'] + list(args) + ['{}={}'.format(k, v)
                                          for k, v in iteritems(kwargs)]
@@ -71,7 +69,11 @@ class DevpiCommandWrapper(object):
 
     def use(self, *args):
         url = '/'.join([self._server_url] + list(args))
-        result = self._execute('use', url)
+        kwargs = {}
+        if self._client_cert:
+            kwargs['--client-cert'] = self._client_cert
+
+        result = self._execute('use', url, **kwargs)
         self._url = url  # to be exception save, only updated now
         return result
 
