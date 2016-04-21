@@ -8,7 +8,7 @@ from devpi.main import main as devpi
 from six import StringIO, iteritems
 from twitter.common.contextutil import mutable_sys, temporary_dir
 
-from six.moves.urllib.parse import urlsplit, urlunsplit
+from six.moves.urllib.parse import urlsplit, urlunsplit, urljoin
 
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("devpi").setLevel(logging.WARNING)
@@ -42,7 +42,7 @@ class DevpiCommandWrapper(object):
         self._server_url = self._extract_server_url(url)
         self._client_dir = client_dir
         self._client_cert = client_cert
-        self._execute('use', url)
+        self.use(urlsplit(url)[2])
 
     def _extract_server_url(self, url):
         parts = urlsplit(url)
@@ -68,7 +68,7 @@ class DevpiCommandWrapper(object):
                 raise DevpiClientError(output.getvalue())
 
     def use(self, *args):
-        url = '/'.join([self._server_url] + list(args))
+        url = urljoin(self._server_url, '/'.join(list(args)))
         kwargs = {}
         if self._client_cert:
             kwargs['--client-cert'] = self._client_cert
