@@ -197,6 +197,56 @@ class ClientTest(TestCase):
 
             self.assertEquals(2, len(devpi.list("test_package==0.1")))
 
+    def test_get_json(self):
+        users = {"user": {"password": "secret"}}
+        indices = {"user/index": {}}
+
+        with TestServer(users, indices) as devpi:
+            root = devpi.get_json('/')
+            self.assertEquals(root['type'], 'list:userconfig')
+            self.assertIn('root', root['result'])
+            self.assertIn('user', root['result'])
+
+            with self.assertRaises(DevpiClientError):
+                devpi.get_json('/foo')
+
+            user = devpi.get_json('/user')
+            self.assertEquals(user['type'], 'userconfig')
+            self.assertIn('index', user['result']['indexes'])
+
+            with self.assertRaises(DevpiClientError):
+                devpi.get_json('/user/foo')
+
+            index = devpi.get_json('/user/index')
+            self.assertEquals(index['type'], 'indexconfig')
+            self.assertListEqual(index['result']['acl_upload'], ['user'])
+            self.assertListEqual(index['result']['projects'], [])
+
+            with self.assertRaises(DevpiClientError):
+                devpi.get_json('/user/index/test-package')
+            with self.assertRaises(DevpiClientError):
+                devpi.get_json('/user/index/test-package/0.1')
+
+            devpi.login("user", "secret")
+            devpi.use("user/index")
+            devpi.upload("tests/fixture/dist/", directory=True)
+
+            index = devpi.get_json('/user/index')
+            self.assertListEqual(index['result']['projects'], ['test-package'])
+
+            package = devpi.get_json('/user/index/test-package')
+            self.assertEquals(package['type'], 'projectconfig')
+            self.assertIn('0.1', package['result'])
+
+            version = devpi.get_json('/user/index/test-package/0.1')
+            self.assertEquals(version['type'], 'versiondata')
+            links = '\n'.join([link['href'] for link in version['result']['+links']])
+            self.assertIn('test_package-0.1-py2.py3-none-any.whl', links)
+            self.assertIn('test-package-0.1.doc.zip', links)
+
+            with self.assertRaises(DevpiClientError):
+                devpi.get_json('/user/index/test-package/0.2')
+
 
 class VolatileIndexTests(TestCase):
 

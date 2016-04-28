@@ -1,4 +1,5 @@
 import contextlib
+import json
 import logging
 import re
 import sys
@@ -131,6 +132,9 @@ class DevpiCommandWrapper(object):
 
     def remove(self, *args):
         return self._execute('remove', '-y', *args)
+
+    def get_json(self, path):
+        return json.loads(self._execute('getjson', path))
 
     @property
     def server_url(self):
