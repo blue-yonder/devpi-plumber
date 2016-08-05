@@ -24,15 +24,11 @@ setup(
     extras_require={
         'test': ['devpi-server'],
     },
-    setup_requires=[
-        'nose'
-    ],
     tests_require=[
         'nose',
         'nose-progressive',
         'coverage',
     ],
-    test_suite='nose.collector',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Console',
