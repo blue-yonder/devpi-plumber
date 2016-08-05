@@ -8,7 +8,7 @@ with open('README.rst') as f:
 
 setup(
     name='devpi-plumber',
-    version='0.2.15',
+    version='0.3.0',
     packages=find_packages(exclude=['tests']),
     author='Stephan Erb',
     author_email='stephan.erb@blue-yonder.com',
@@ -18,10 +18,12 @@ setup(
     license='new BSD',
     install_requires=[
         'devpi-client',
-        'devpi-server',
         'twitter.common.contextutil',
         'six'
     ],
+    extras_require={
+        'test': ['devpi-server'],
+    },
     setup_requires=[
         'nose'
     ],

@@ -1,7 +1,7 @@
 # Requirements definition for pip-compiler
 
 # Runtime dependencies
--e .
+-e .[test]
 
 # Test requirements
 nose
