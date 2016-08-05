@@ -6,7 +6,6 @@
 # Test requirements
 nose
 nose-progressive
-mock
 coverage
 
 # Documentation build

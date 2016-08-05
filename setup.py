@@ -28,7 +28,6 @@ setup(
     tests_require=[
         'nose',
         'nose-progressive',
-        'mock',
         'coverage',
     ],
     test_suite='nose.collector',
