@@ -1,0 +1,12 @@
+# Requirements definition for pip-compiler
+
+# Runtime dependencies
+-e .[test]
+
+# Test requirements
+nose
+nose-progressive
+coverage
+
+# Documentation build
+sphinx

@@ -16,7 +16,10 @@ Mario the Devpi Plumber
     :target: https://requires.io/github/blue-yonder/devpi-plumber/requirements/?branch=master
 
 Mario, the devpi-plumber, helps to automate and test large devpi_ installations. It offers a simple python commandline wrapper
-around the devpi client binary and utilities for using devpi in a test harness.
+around the devpi client binary and utilities for using devpi in a test harness. To get access to the latter, install Mario
+with the extra ``test`` requirement::
+
+    pip install devpi-plumber[test]
 
 
 Mario by Example:
