@@ -21,8 +21,7 @@ def TestServer(users={}, indices={}, config={}, fail_on_output=['Traceback']):
             'serverdir': server_dir}
         server_options.update(config)
 
-        if 'serverdir' not in config:
-            prefill_serverdir(server_options)
+        initialize_serverdir(server_options)
 
         with DevpiServer(server_options) as url:
             with DevpiClient(url, 'root', '') as client:
@@ -39,7 +38,7 @@ def TestServer(users={}, indices={}, config={}, fail_on_output=['Traceback']):
 
 
 def import_state(serverdir, importdir):
-    devpi_server_command(serverdir=serverdir, **{'import': importdir})
+    devpi_server_command(serverdir=serverdir, init=None, **{'import': importdir})
 
 
 def export_state(serverdir, exportdir):
@@ -78,18 +77,24 @@ serverdir_cache = '/tmp/devpi-plumber-cache'
 atexit.register(shutil.rmtree, serverdir_cache, ignore_errors=True)
 
 
-def prefill_serverdir(server_options):
+def initialize_serverdir(server_options):
     """
     Starting a new devpi-server is costly due to its initial sync with pypi.python.org.
     We can speedup this process by using the content of a cached serverdir.
     """
     serverdir_new = server_options['serverdir']
 
+    if os.path.exists(serverdir_new) and os.listdir(serverdir_new):
+        # Don't touch already populated directory.
+        return
+
     if 'master-url' in server_options:
-        return  # always has to be a fresh sync
+        # Aways has to be a fresh sync.
+        devpi_server_command(init=None, **server_options)
+        return
     elif os.path.exists(serverdir_cache):
         shutil.rmtree(serverdir_new)
         shutil.copytree(serverdir_cache, serverdir_new)
     else:
-        with DevpiServer(server_options):
-            shutil.copytree(serverdir_new, serverdir_cache)
+        devpi_server_command(init=None, **server_options)
+        shutil.copytree(serverdir_new, serverdir_cache)

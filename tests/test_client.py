@@ -166,7 +166,7 @@ class ClientTest(TestCase):
                 devpi.list("test_package==0.1")
 
     def test_replica(self):
-        with TestServer(config={'port': 2414}) as devpi:
+        with TestServer(config={'port': 2414, 'role': 'master'}) as devpi:
             with TestServer(config={'master-url': devpi.server_url, 'port': 2413}) as replica:
 
                 self.assertNotEqual(devpi.server_url, replica.server_url)
