@@ -38,7 +38,8 @@ def TestServer(users={}, indices={}, config={}, fail_on_output=['Traceback']):
 
 
 def import_state(serverdir, importdir):
-    devpi_server_command(serverdir=serverdir, init=None, **{'import': importdir})
+    devpi_server_command(serverdir=serverdir, init=None)
+    devpi_server_command(serverdir=serverdir, **{'import': importdir})
 
 
 def export_state(serverdir, exportdir):
