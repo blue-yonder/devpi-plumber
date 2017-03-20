@@ -93,9 +93,12 @@ def initialize_serverdir(server_options):
         # Aways has to be a fresh sync.
         devpi_server_command(init=None, **server_options)
         return
-    elif os.path.exists(serverdir_cache):
+    elif os.path.exists(serverdir_cache) and os.listdir(serverdir_cache):
         shutil.rmtree(serverdir_new)
         shutil.copytree(serverdir_cache, serverdir_new)
     else:
         devpi_server_command(init=None, **server_options)
-        shutil.copytree(serverdir_new, serverdir_cache)
+        if 'no-root-pypi' not in server_options:
+            # Caching serverdir without root/pypi breaks following tests that rely on it.
+            shutil.rmtree(serverdir_cache, ignore_errors=True)
+            shutil.copytree(serverdir_new, serverdir_cache)

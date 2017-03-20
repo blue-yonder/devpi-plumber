@@ -4,6 +4,7 @@
 -e .[test]
 
 # Test requirements
+mock
 nose
 nose-progressive
 coverage

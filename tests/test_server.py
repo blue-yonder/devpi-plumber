@@ -1,3 +1,4 @@
+import mock
 import requests
 from twitter.common.contextutil import temporary_dir
 from unittest import TestCase
@@ -53,3 +54,14 @@ class ServerTest(TestCase):
                 import_state(server_dir2, state_dir)
                 with TestServer(config=dict(serverdir=server_dir2)) as devpi:
                     self.assertEqual(200, requests.get(devpi.url + '/user1').status_code)
+
+    def test_no_root_pypi_not_cached(self):
+        # Work on separate cache -- must be empty for this test.
+        import devpi_plumber.server
+        with temporary_dir() as cache_dir:
+            with mock.patch.object(devpi_plumber.server, 'serverdir_cache', new=cache_dir):
+                with TestServer(config={'no-root-pypi': None}):
+                    pass
+
+                with TestServer() as devpi:
+                    self.assertEqual(200, requests.get(devpi.url + '/root/pypi').status_code)
