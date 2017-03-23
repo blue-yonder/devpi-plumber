@@ -83,22 +83,29 @@ def initialize_serverdir(server_options):
     Starting a new devpi-server is costly due to its initial sync with pypi.python.org.
     We can speedup this process by using the content of a cached serverdir.
     """
+    def init_serverdir():
+        devpi_server_command(init=None, **server_options)
+
     serverdir_new = server_options['serverdir']
 
     if os.path.exists(serverdir_new) and os.listdir(serverdir_new):
         # Don't touch already populated directory.
         return
 
-    if 'master-url' in server_options:
-        # Aways has to be a fresh sync.
-        devpi_server_command(init=None, **server_options)
+    if 'no-root-pypi' in server_options:
+        # Always run servers called with `--no-root-pypi in a freshly initialized serverdir.
+        init_serverdir()
         return
-    elif os.path.exists(serverdir_cache) and os.listdir(serverdir_cache):
-        shutil.rmtree(serverdir_new)
-        shutil.copytree(serverdir_cache, serverdir_new)
+
+    if 'master-url' in server_options:
+        # Running as replica. Aways has to be a fresh sync.
+        init_serverdir()
     else:
-        devpi_server_command(init=None, **server_options)
-        if 'no-root-pypi' not in server_options:
-            # Caching serverdir without root/pypi breaks following tests that rely on it.
+        # Running as master.
+        if os.path.exists(serverdir_cache) and os.listdir(serverdir_cache):
+            shutil.rmtree(serverdir_new)
+            shutil.copytree(serverdir_cache, serverdir_new)
+        else:
+            init_serverdir()
             shutil.rmtree(serverdir_cache, ignore_errors=True)
             shutil.copytree(serverdir_new, serverdir_cache)
