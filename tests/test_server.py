@@ -44,9 +44,13 @@ class ServerTest(TestCase):
                 self.assertEqual(404, requests.get(devpi.url + '/doesnt/exist').status_code)
 
     def test_import_export(self):
+        users = {
+            'user1': {'password': 'secret'},
+        }
+
         with temporary_dir() as state_dir:
             with temporary_dir() as server_dir1:
-                with TestServer(config=dict(serverdir=server_dir1), users=dict(user1=dict(password='secret'))) as devpi:
+                with TestServer(config=dict(serverdir=server_dir1), users=users) as devpi:
                     self.assertEqual(200, requests.get(devpi.url + '/user1').status_code)
                 export_state(server_dir1, state_dir)
 
