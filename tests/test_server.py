@@ -64,8 +64,11 @@ class ServerTest(TestCase):
         import devpi_plumber.server
         with temporary_dir() as cache_dir:
             with mock.patch.object(devpi_plumber.server, 'serverdir_cache', new=cache_dir):
-                with TestServer(config={'no-root-pypi': None}):
+                with TestServer() as devpi:
                     pass
+
+                with TestServer(config={'no-root-pypi': None}):
+                    self.assertEqual(404, requests.get(devpi.url + '/root/pypi').status_code)
 
                 with TestServer() as devpi:
                     self.assertEqual(200, requests.get(devpi.url + '/root/pypi').status_code)
