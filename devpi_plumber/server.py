@@ -64,6 +64,11 @@ def _assert_no_logged_errors(fail_on_output, logfile):
         raise RuntimeError(logs)
 
 
+def _dump_log(filename):
+    with open(filename) as log:
+        print(log.read())
+
+
 @contextlib.contextmanager
 def DevpiServer(options):
     url = 'http://localhost:{}'.format(options['port'])
@@ -71,15 +76,19 @@ def DevpiServer(options):
     logfile = options['serverdir'] + '/server.log' if 'serverdir' in options else os.devnull
     with open(logfile, 'wb', buffering=0) as stdout:
         try:
-            server = subprocess.Popen(
-                build_devpi_server_command(**options),
-                stderr=subprocess.STDOUT,
-                stdout=stdout,
-            )
-            wait_for_startup(server, url)
+            try:
+                server = subprocess.Popen(
+                    build_devpi_server_command(**options),
+                    stderr=subprocess.STDOUT,
+                    stdout=stdout,
+                )
+                wait_for_startup(server, url)
+            except:
+                _dump_log(logfile)
+                raise
             yield url
         finally:
-            if server:
+            if server and server.poll() is None:
                 server.terminate()
                 try:
                     server.wait(30)
