@@ -1,3 +1,9 @@
+UNRELEASED
+----------
+
+- The new environment variables ``DEVPI_PLUMBER_SERVER_HOST`` and ``DEVPI_PLUMBER_SERVER_PORT`` allow you to tune where
+  the test server binds to from the outside.
+
 0.4.2
 -----
 - Don't cache servers started with `--no-root-pypi`.

@@ -17,8 +17,10 @@ def TestServer(users={}, indices={}, config={}, fail_on_output=['Traceback']):
     with temporary_dir() as server_dir:
 
         server_options = {
-            'port': 2414,
-            'serverdir': server_dir}
+            'host': os.getenv('DEVPI_PLUMBER_SERVER_HOST', 'localhost'),
+            'port': os.getenv('DEVPI_PLUMBER_SERVER_PORT', 2414),
+            'serverdir': server_dir,
+        }
         server_options.update(config)
 
         initialize_serverdir(server_options)
