@@ -68,12 +68,13 @@ def _assert_no_logged_errors(fail_on_output, logfile):
 def DevpiServer(options):
     url = 'http://localhost:{}'.format(options['port'])
     server = None
-    stdout = open(options['serverdir'] + '/server.log', 'wb') if 'serverdir' in options else subprocess.DEVNULL
-    try:
+    logfile = options['serverdir'] + '/server.log' if 'serverdir' in options else os.devnull
+    with open(logfile, 'wb') as stdout:
         try:
             server = subprocess.Popen(
                 build_devpi_server_command(**options),
-                stderr=subprocess.STDOUT, stdout=stdout, stdin=subprocess.DEVNULL,
+                stderr=subprocess.STDOUT,
+                stdout=stdout,
             )
             wait_for_startup(server, url)
             yield url
@@ -85,9 +86,6 @@ def DevpiServer(options):
                 except TimeoutError:
                     server.kill()
                     server.wait(30)
-    finally:
-        if stdout is not subprocess.DEVNULL:
-            stdout.close()
 
 
 def build_devpi_server_command(**options):
