@@ -69,7 +69,7 @@ def DevpiServer(options):
     url = 'http://localhost:{}'.format(options['port'])
     server = None
     logfile = options['serverdir'] + '/server.log' if 'serverdir' in options else os.devnull
-    with open(logfile, 'wb') as stdout:
+    with open(logfile, 'wb', buffering=0) as stdout:
         try:
             server = subprocess.Popen(
                 build_devpi_server_command(**options),
