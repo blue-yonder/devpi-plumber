@@ -3,6 +3,9 @@ import contextlib
 import os
 import shutil
 import subprocess
+import time
+
+import requests
 
 from devpi_plumber.client import DevpiClient
 from six import iteritems
@@ -36,7 +39,7 @@ def TestServer(users={}, indices={}, config={}, fail_on_output=['Traceback']):
 
                 yield client
 
-        _assert_no_logged_errors(fail_on_output, server_options['serverdir'] + '/.xproc/devpi-server/xprocess.log')
+        _assert_no_logged_errors(fail_on_output, server_options['serverdir'] + '/server.log')
 
 
 def import_state(serverdir, importdir):
@@ -63,17 +66,53 @@ def _assert_no_logged_errors(fail_on_output, logfile):
 
 @contextlib.contextmanager
 def DevpiServer(options):
+    url = 'http://localhost:{}'.format(options['port'])
+    server = None
+    stdout = open(options['serverdir'] + '/server.log', 'wb') if 'serverdir' in options else subprocess.DEVNULL
     try:
-        devpi_server_command(start=None, **options)
-        yield 'http://localhost:{}'.format(options['port'])
+        try:
+            server = subprocess.Popen(
+                build_devpi_server_command(**options),
+                stderr=subprocess.STDOUT, stdout=stdout, stdin=subprocess.DEVNULL,
+            )
+            wait_for_startup(server, url)
+            yield url
+        finally:
+            if server:
+                server.terminate()
+                try:
+                    server.wait(30)
+                except TimeoutError:
+                    server.kill()
+                    server.wait(30)
     finally:
-        devpi_server_command(stop=None, **options)
+        if stdout is not subprocess.DEVNULL:
+            stdout.close()
+
+
+def build_devpi_server_command(**options):
+    opts = ['--{}={}'.format(k, v) for k, v in iteritems(options) if v is not None]
+    flags = ['--{}'.format(k) for k, v in iteritems(options) if v is None]
+    return ['devpi-server'] + opts + flags
 
 
 def devpi_server_command(**options):
-    opts = ['--{}={}'.format(k, v) for k, v in iteritems(options) if v is not None]
-    flags = ['--{}'.format(k) for k, v in iteritems(options) if v is None]
-    subprocess.check_output(['devpi-server'] + opts + flags, stderr=subprocess.STDOUT)
+    subprocess.check_output(build_devpi_server_command(**options), stderr=subprocess.STDOUT)
+
+
+def wait_for_startup(server, url):
+    deadline = time.time() + 30
+    while time.time() < deadline:
+        if server.poll() is not None:
+            raise Exception('Server failed to start up.')
+        try:
+            requests.get(url, timeout=0.1)
+        except requests.RequestException:
+            time.sleep(0.1)  # Request failed, try again
+        else:
+            return  # Server came up
+    raise Exception('Server failed to start up within 30 seconds.')
+
 
 
 serverdir_cache = '/tmp/devpi-plumber-cache'
