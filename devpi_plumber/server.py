@@ -114,7 +114,7 @@ def wait_for_startup(server, url):
         if server.poll() is not None:
             raise Exception('Server failed to start up.')
         try:
-            requests.get(url, timeout=0.1)
+            requests.get(url, timeout=1)
         except requests.RequestException:
             time.sleep(0.1)  # Request failed, try again
         else:
