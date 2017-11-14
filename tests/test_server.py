@@ -76,3 +76,11 @@ def test_no_root_pypi_not_cached():
 
             with TestServer() as devpi:
                 assert 200 == requests.get(devpi.url + '/root/pypi').status_code
+
+
+def test_log_printed_on_startup_failure(capsys):
+    with pytest.raises(Exception):
+        with TestServer(config={'foo': 'bla'}):  # use an invalid config to fail the start-up
+            pass
+    out, _ = capsys.readouterr()
+    assert 'unrecognized argument' in out
