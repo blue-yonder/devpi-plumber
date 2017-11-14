@@ -8,7 +8,7 @@ with open('README.rst') as f:
 
 setup(
     name='devpi-plumber',
-    version='0.4.2',
+    use_scm_version=True,
     packages=find_packages(exclude=['tests']),
     author='Stephan Erb',
     author_email='stephan.erb@blue-yonder.com',
@@ -16,6 +16,9 @@ setup(
     description='Mario, the devpi-plumber, helps to automate and test large devpi installations.',
     long_description=readme,
     license='new BSD',
+    setup_requires=[
+        'setuptools_scm',
+    ],
     install_requires=[
         'devpi-client',
         'twitter.common.contextutil',

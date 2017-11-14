@@ -36,6 +36,7 @@ pytest==3.2.3
 pytz==2016.10             # via babel
 repoze.lru==0.6           # via devpi-server, pyramid
 requests==2.13.0          # via devpi-common, sphinx
+setuptools-scm==1.15.6
 six==1.10.0               # via argon2-cffi, mock, sphinx
 snowballstemmer==1.2.1    # via sphinx
 sphinx==1.5.3
