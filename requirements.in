@@ -5,9 +5,8 @@
 
 # Test requirements
 mock
-nose
-nose-progressive
-coverage
+pytest
+pytest-cov
 
 # Documentation build
 sphinx

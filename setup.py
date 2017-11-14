@@ -25,9 +25,8 @@ setup(
         'test': ['devpi-server>=4.2.1'],
     },
     tests_require=[
-        'nose',
-        'nose-progressive',
-        'coverage',
+        'pytest',
+        'pytest-cov',
     ],
     classifiers=[
         'Development Status :: 4 - Beta',
