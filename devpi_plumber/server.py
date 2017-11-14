@@ -81,6 +81,7 @@ def DevpiServer(options):
                     build_devpi_server_command(**options),
                     stderr=subprocess.STDOUT,
                     stdout=stdout,
+                    close_fds=True,
                 )
                 wait_for_startup(server, url)
             except:
@@ -91,10 +92,10 @@ def DevpiServer(options):
             if server and server.poll() is None:
                 server.terminate()
                 try:
-                    server.wait(30)
+                    wait_for_shutdown(server)
                 except TimeoutError:
                     server.kill()
-                    server.wait(30)
+                    wait_for_shutdown(server)
 
 
 def build_devpi_server_command(**options):
@@ -120,6 +121,17 @@ def wait_for_startup(server, url):
             return  # Server came up
     raise Exception('Server failed to start up within 30 seconds.')
 
+
+def wait_for_shutdown(server):
+    """
+    Wait 30s for the server to shut-down.
+    Raises a TimeoutError if the server fails to shut down.
+    """
+    deadline = time.time() + 30
+    while time.time() < deadline and server.poll() is None:
+        time.sleep(0.1)
+    if server.poll() is None:
+        raise TimeoutError('Server failed to shut down within 30 seconds.')
 
 
 serverdir_cache = '/tmp/devpi-plumber-cache'
