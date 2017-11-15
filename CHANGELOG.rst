@@ -1,5 +1,5 @@
-UNRELEASED
-----------
+0.4.3
+-----
 
 - Fix compatibility with devpi-server 4.3.0 and up.
 - The new environment variables ``DEVPI_PLUMBER_SERVER_HOST`` and ``DEVPI_PLUMBER_SERVER_PORT`` allow you to tune where
