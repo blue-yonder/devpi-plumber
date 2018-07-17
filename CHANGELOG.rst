@@ -1,3 +1,8 @@
+UNRELEASED
+----------
+
+- Support for Python 3.2, 3.3, and 3.4 is no longer tested.
+
 0.4.3
 -----
 
