@@ -31,9 +31,10 @@ def DevpiClient(url, user=None, password=None, client_cert=None):
         wrapper = DevpiCommandWrapper(url, client_dir, client_cert=client_cert)
 
         if user and password is not None:
-            wrapper.login(user, password)
-
-        yield wrapper
+            with wrapper.user_session(user, password):
+                yield wrapper
+        else:
+            yield wrapper
 
 
 class DevpiCommandWrapper(object):
