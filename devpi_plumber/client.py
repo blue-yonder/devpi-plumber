@@ -130,6 +130,10 @@ class DevpiCommandWrapper(object):
             return (user is None) or line.startswith(user + '/')
         return [l.split()[0] for l in self._execute('use', '-l').splitlines() if user_filter(l)]
 
+    def list_users(self, *args, **kwargs):
+        """ List all known usernames """
+        return self._execute('user', '--list', *args, **kwargs).splitlines()
+
     def remove(self, *args):
         return self._execute('remove', '-y', *args)
 

@@ -54,6 +54,12 @@ class ClientTest(TestCase):
             devpi.modify_user("user", password="new secret")
             self.assertIn("credentials valid", devpi.login("user", "new secret"))
 
+    def test_list_users(self):
+        users = {"user": {"password": "secret"}}
+
+        with TestServer(users) as devpi:
+            self.assertEqual(sorted(['root', 'user']), sorted(devpi.list_users()))
+
     def test_create_index(self):
         users = {"user": {"password": "secret"}}
 
