@@ -87,6 +87,12 @@ class DevpiCommandWrapper(object):
     def create_user(self, user, *args, **kwargs):
         return self._execute('user', '--create', user, *args, **kwargs)
 
+    def delete_user(self, user):
+        """ Delete the given user """
+        for index in self.list_indices(user):
+            self.modify_index(index, volatile=True)
+        return self._execute('user', '--delete', '-y', user)
+
     def create_index(self, index, *args, **kwargs):
         return self._execute('index', '--create', index, *args, **kwargs)
 
