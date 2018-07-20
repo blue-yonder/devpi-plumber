@@ -47,12 +47,27 @@ class ClientTest(TestCase):
             devpi.create_user("user", password="password", email="user@example.com")
             self.assertEqual(200, requests.get(devpi.server_url + "/user").status_code)
 
+    def test_delete_user(self):
+        users = {"user": {"password": "secret"}}
+
+        with TestServer(users) as devpi:
+            devpi.create_index("user/index")
+            devpi.delete_user("user")
+            self.assertEqual(['root'], devpi.list_users())
+            self.assertEqual(['root/pypi'], devpi.list_indices())
+
     def test_modify_user(self):
         users = {"user": {"password": "secret"}}
 
         with TestServer(users) as devpi:
             devpi.modify_user("user", password="new secret")
             self.assertIn("credentials valid", devpi.login("user", "new secret"))
+
+    def test_list_users(self):
+        users = {"user": {"password": "secret"}}
+
+        with TestServer(users) as devpi:
+            self.assertEqual(sorted(['root', 'user']), sorted(devpi.list_users()))
 
     def test_create_index(self):
         users = {"user": {"password": "secret"}}
