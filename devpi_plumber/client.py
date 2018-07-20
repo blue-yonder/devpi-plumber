@@ -116,6 +116,17 @@ class DevpiCommandWrapper(object):
 
         return self._execute(*args, **kwargs)
 
+    @contextlib.contextmanager
+    def user_session(self, user, password):
+        """
+        Contextmanager used to log in as the given user
+        """
+        self.login(user, password)
+        try:
+            yield
+        finally:
+            self.logoff()
+
     def list(self, *args):
         try:
             return self._execute('list', *args).splitlines()

@@ -11,6 +11,14 @@ class ClientTest(TestCase):
     """
     Assert that the plumber devpi client behaves as expected.
     """
+    def test_user_session(self):
+        users = {"user": {"password": "secret"}}
+
+        with TestServer(users) as devpi:
+            self.assertEquals('root', devpi.user)
+            with devpi.user_session('user', 'secret'):
+                self.assertEquals("user", devpi.user)
+            self.assertIsNone(devpi.user)
 
     def test_login_success(self):
         users = {"user": {"password": "secret"}}
