@@ -35,6 +35,9 @@ def DevpiClient(url, user=None, password=None, client_cert=None):
 
         yield wrapper
 
+        if user and password is not None:
+            wrapper.logoff()
+
 
 class DevpiCommandWrapper(object):
 
