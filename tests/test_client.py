@@ -2,7 +2,7 @@ import requests
 from twitter.common.contextutil import pushd
 from unittest import TestCase
 
-from devpi_plumber.client import (DevpiClientError, DevpiCommandWrapper,
+from devpi_plumber.client import (DevpiClient, DevpiClientError, DevpiCommandWrapper,
                                   volatile_index)
 from devpi_plumber.server import TestServer
 
@@ -11,6 +11,22 @@ class ClientTest(TestCase):
     """
     Assert that the plumber devpi client behaves as expected.
     """
+    def test_user_session(self):
+        users = {"user": {"password": "secret"}}
+
+        with TestServer(users) as devpi:
+            self.assertEquals('root', devpi.user)
+            with devpi.user_session('user', 'secret'):
+                self.assertEquals("user", devpi.user)
+            self.assertIsNone(devpi.user)
+
+    def test_devpi_client(self):
+        with TestServer() as test_server:
+            with DevpiClient(test_server.server_url) as devpi:
+                devpi.create_user("user", password="password", email="user@example.com")
+                self.assertEqual(200, requests.get(devpi.server_url + "/user").status_code)
+                self.assertIn("credentials valid", devpi.login("user", "password"))
+                self.assertEquals("user", devpi.user)
 
     def test_login_success(self):
         users = {"user": {"password": "secret"}}

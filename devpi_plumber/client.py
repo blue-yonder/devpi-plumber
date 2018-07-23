@@ -31,9 +31,10 @@ def DevpiClient(url, user=None, password=None, client_cert=None):
         wrapper = DevpiCommandWrapper(url, client_dir, client_cert=client_cert)
 
         if user and password is not None:
-            wrapper.login(user, password)
-
-        yield wrapper
+            with wrapper.user_session(user, password):
+                yield wrapper
+        else:
+            yield wrapper
 
 
 class DevpiCommandWrapper(object):
@@ -115,6 +116,17 @@ class DevpiCommandWrapper(object):
             args.append(path)
 
         return self._execute(*args, **kwargs)
+
+    @contextlib.contextmanager
+    def user_session(self, user, password):
+        """
+        Contextmanager used to log in as the given user
+        """
+        self.login(user, password)
+        try:
+            yield
+        finally:
+            self.logoff()
 
     def list(self, *args):
         try:
