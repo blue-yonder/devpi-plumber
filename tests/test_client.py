@@ -92,6 +92,15 @@ class ClientTest(TestCase):
             devpi.create_index("user/index")
             self.assertEqual(200, requests.get(devpi.server_url + "/user/index").status_code)
 
+    def test_delete_index(self):
+        users = {"user": {"password": "secret"}}
+
+        with TestServer(users) as devpi:
+            devpi.create_index("user/index")
+            self.assertEqual(200, requests.get(devpi.server_url + "/user/index").status_code)
+            devpi.delete_index("user/index")
+            self.assertEqual(['root/pypi'], devpi.list_indices())
+
     def test_modify_index(self):
         users = {"user": {"password": "secret"}}
         indices = {"user/index": {"bases": ""}}

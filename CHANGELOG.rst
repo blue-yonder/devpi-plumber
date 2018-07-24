@@ -2,7 +2,7 @@ UNRELEASED
 ----------
 
 - Support for Python 3.2, 3.3, and 3.4 is no longer tested.
-- Add new list_users and delete_user functions to DevpiCommandWrapper
+- Add new list_users, delete_user and delete_index functions to DevpiCommandWrapper
 - Add DevpiCommandWrapper.user_session, a contextmanager which handles logon/logoff with supplied credentials
 
 0.4.3

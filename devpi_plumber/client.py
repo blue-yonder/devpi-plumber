@@ -97,6 +97,9 @@ class DevpiCommandWrapper(object):
     def create_index(self, index, *args, **kwargs):
         return self._execute('index', '--create', index, *args, **kwargs)
 
+    def delete_index(self, index, *args, **kwargs):
+        return self._execute('index', '--delete', '-y', index, *args, **kwargs)
+
     def modify_user(self, user, *args, **kwargs):
         return self._execute('user', '--modify', user, *args, **kwargs)
 
