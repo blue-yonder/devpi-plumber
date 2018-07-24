@@ -1,5 +1,5 @@
-UNRELEASED
-----------
+0.5.0
+-----
 
 - Support for Python 3.2, 3.3, and 3.4 is no longer tested.
 - Add new list_users, delete_user and delete_index functions to DevpiCommandWrapper
