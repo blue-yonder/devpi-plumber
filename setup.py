@@ -28,6 +28,7 @@ setup(
         'test': ['devpi-server>=4.2.1'],
     },
     tests_require=[
+        'mock',
         'pytest',
         'pytest-cov',
     ],

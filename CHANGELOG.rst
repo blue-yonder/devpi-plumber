@@ -1,3 +1,8 @@
+0.5.1
+-----
+
+- Improve compatibility with Devpi 5.x by not processing events during state import.
+
 0.5.0
 -----
 
