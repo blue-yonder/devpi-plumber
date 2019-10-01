@@ -14,9 +14,7 @@ script: pytest
 after_success: coveralls
 deploy:
   provider: pypi
-  user: BYPyPi
-  password:
-    secure: NjiyBYuCko9EUnNirA9iEk/QfG0xf3n2ylcvDidQYrHzaVVhvdcvvERlkeu9W0Z1Ed7It4pW9VeRFR1Qh+rnR29obbTh61fUgDbbBbCExnZcdK/mrVs7LpGPCS98lFesQhGC2d3SndMnd+sUzAKWsnarOPAC8UsMRaNgmsZ/gKk=
+  user: __token__
   distributions: sdist bdist_wheel
   on:
     tags: true
