@@ -4,6 +4,7 @@
 #
 #    pip-compile --no-index
 #
+-e file:///home/dependabot/dependabot-updater/tmp/dependabot_20200106-71-sethll
 alabaster==0.7.12         # via sphinx
 apipkg==1.5               # via execnet
 appdirs==1.4.3            # via devpi-server
@@ -49,7 +50,6 @@ python-dateutil==2.8.0    # via strictyaml
 pytz==2019.2              # via babel
 repoze.lru==0.7           # via devpi-server
 requests==2.22.0          # via devpi-common, sphinx
-ruamel.yaml.clib==0.1.0   # via ruamel.yaml
 ruamel.yaml==0.16.0       # via strictyaml
 setuptools-scm==3.3.3
 six==1.12.0               # via argon2-cffi, mock, more-itertools, packaging, pytest, python-dateutil, sphinx, tox
@@ -60,13 +60,13 @@ strictyaml==1.0.3         # via devpi-server
 toml==0.10.0              # via check-manifest, tox
 tox==3.13.2               # via devpi-client
 translationstring==1.3    # via pyramid
-twitter.common.contextutil==0.3.11
-twitter.common.dirutil==0.3.11  # via twitter.common.contextutil
+twitter-common-contextutil==0.3.11
+twitter.common.dirutil==0.3.11  # via twitter-common-contextutil
 twitter.common.lang==0.3.11  # via twitter.common.dirutil
 urllib3==1.25.3           # via requests
 venusian==1.2.0           # via pyramid
 virtualenv==16.7.2        # via tox
-waitress==1.3.0           # via devpi-server
+waitress==1.4.2           # via devpi-server
 wcwidth==0.1.7            # via pytest
 webob==1.8.5              # via pyramid
 zipp==0.5.2               # via importlib-metadata
@@ -74,4 +74,4 @@ zope.deprecation==4.4.0   # via pyramid
 zope.interface==4.6.0     # via pyramid
 
 # The following packages are considered to be unsafe in a requirements file:
-# setuptools==41.0.1        # via plaster, pyramid, sphinx, zope.deprecation, zope.interface
+# setuptools
