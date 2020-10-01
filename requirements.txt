@@ -63,7 +63,7 @@ translationstring==1.3    # via pyramid
 twitter.common.contextutil==0.3.11
 twitter.common.dirutil==0.3.11  # via twitter.common.contextutil
 twitter.common.lang==0.3.11  # via twitter.common.dirutil
-urllib3==1.25.8           # via requests
+urllib3==1.25.10           # via requests
 venusian==1.2.0           # via pyramid
 virtualenv==16.7.2        # via tox
 waitress==1.4.3           # via devpi-server
