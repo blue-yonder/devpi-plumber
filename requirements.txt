@@ -40,7 +40,7 @@ plaster==1.0              # via plaster-pastedeploy, pyramid
 pluggy==0.12.0            # via devpi-client, devpi-server, pytest, tox
 py==1.10.0                 # via devpi-client, devpi-common, devpi-server, pytest, tox
 pycparser==2.19           # via cffi
-pygments==2.4.2           # via sphinx
+pygments==2.7.4           # via sphinx
 pyparsing==2.4.2          # via packaging
 pyramid==1.10.4           # via devpi-server
 pytest-cov==2.7.1
