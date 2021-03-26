@@ -23,7 +23,6 @@ setup(
         'devpi-client',
         'requests',
         'twitter.common.contextutil',
-        'six'
     ],
     extras_require={
         'test': ['devpi-server>=4.2.1'],

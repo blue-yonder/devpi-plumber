@@ -135,7 +135,6 @@ setuptools-scm==6.0.1
 six==1.15.0
     # via
     #   argon2-cffi
-    #   devpi-plumber
     #   python-dateutil
     #   tox
     #   virtualenv
