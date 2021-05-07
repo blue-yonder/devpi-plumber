@@ -4,12 +4,12 @@ import logging
 import re
 import sys
 from collections import OrderedDict
+from io import StringIO
+from urllib.parse import urlsplit, urlunsplit, urljoin
 
 from devpi.main import main as devpi
-from six import StringIO, iteritems
 from twitter.common.contextutil import mutable_sys, temporary_dir
 
-from six.moves.urllib.parse import urlsplit, urlunsplit, urljoin
 
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("devpi").setLevel(logging.WARNING)
@@ -56,7 +56,7 @@ class DevpiCommandWrapper(object):
         kwargs.update({'--clientdir': self._client_dir})
 
         return ['devpi'] + list(args) + ['{}={}'.format(k, v)
-                                         for k, v in iteritems(kwargs)]
+                                         for k, v in kwargs.items()]
 
     def _execute(self, *args, **kwargs):
         args = self._create_command(*args, **kwargs)

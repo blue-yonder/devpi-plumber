@@ -8,7 +8,6 @@ import time
 import requests
 
 from devpi_plumber.client import DevpiClient
-from six import iteritems
 from twitter.common.contextutil import temporary_dir
 
 
@@ -31,10 +30,10 @@ def TestServer(users={}, indices={}, config={}, fail_on_output=['Traceback']):
         with DevpiServer(server_options) as url:
             with DevpiClient(url, 'root', '') as client:
 
-                for user, kwargs in iteritems(users):
+                for user, kwargs in users.items():
                     client.create_user(user, **kwargs)
 
-                for index, kwargs in iteritems(indices):
+                for index, kwargs in indices.items():
                     client.create_index(index, **kwargs)
 
                 yield client
@@ -99,8 +98,8 @@ def DevpiServer(options):
 
 
 def build_devpi_server_command(**options):
-    opts = ['--{}={}'.format(k, v) for k, v in iteritems(options) if v is not None]
-    flags = ['--{}'.format(k) for k, v in iteritems(options) if v is None]
+    opts = ['--{}={}'.format(k, v) for k, v in options.items() if v is not None]
+    flags = ['--{}'.format(k) for k, v in options.items() if v is None]
     return ['devpi-server'] + opts + flags
 
 

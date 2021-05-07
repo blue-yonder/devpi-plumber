@@ -13,9 +13,3 @@ pytest-cov
 
 # Documentation build
 sphinx
-
-
-# special cases to support multiple python versions
-more-itertools<6.0.0
-pytest<5  # Python 2
-sphinx<2  # Python 2
