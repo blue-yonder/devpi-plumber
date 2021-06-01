@@ -33,13 +33,13 @@ check-manifest==0.46
 coverage==5.5
     # via pytest-cov
 devpi-client==5.2.2
-    # via devpi-plumber
+    # via sanitized-package
 devpi-common==3.6.0
     # via
     #   devpi-client
     #   devpi-server
 devpi-server==5.5.1
-    # via devpi-plumber
+    # via sanitized-package
 distlib==0.3.1
     # via virtualenv
 docutils==0.16
@@ -124,7 +124,7 @@ repoze.lru==0.7
 requests==2.25.1
     # via
     #   devpi-common
-    #   devpi-plumber
+    #   sanitized-package
     #   sphinx
 ruamel.yaml.clib==0.2.2
     # via ruamel.yaml
@@ -167,13 +167,13 @@ tox==3.23.0
     # via devpi-client
 translationstring==1.4
     # via pyramid
-twitter.common.contextutil==0.3.11
-    # via devpi-plumber
+twitter-common-contextutil==0.3.11
+    # via sanitized-package
 twitter.common.dirutil==0.3.11
-    # via twitter.common.contextutil
+    # via twitter-common-contextutil
 twitter.common.lang==0.3.11
     # via twitter.common.dirutil
-urllib3==1.26.4
+urllib3==1.26.5
     # via requests
 venusian==3.0.0
     # via pyramid
