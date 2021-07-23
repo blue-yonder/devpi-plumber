@@ -1,3 +1,8 @@
+import secrets
+from contextlib import contextmanager
+from pathlib import Path
+from tempfile import TemporaryDirectory
+
 import requests
 from twitter.common.contextutil import pushd
 from unittest import TestCase
@@ -5,6 +10,19 @@ from unittest import TestCase
 from devpi_plumber.client import (DevpiClient, DevpiClientError, DevpiCommandWrapper,
                                   volatile_index)
 from devpi_plumber.server import TestServer
+
+
+@contextmanager
+def SecretFile():
+    with TemporaryDirectory() as private_dir:
+        private_dir = Path(private_dir)
+        private_dir.chmod(0o700)
+
+        secret_file = private_dir / 'devpi.secret'
+        secret_file.write_bytes(secrets.token_bytes(32))
+        secret_file.chmod(0o600)
+
+        yield secret_file
 
 
 class ClientTest(TestCase):
@@ -206,10 +224,10 @@ class ClientTest(TestCase):
                 devpi.list("test_package==0.1")
 
     def test_replica(self):
-        with TestServer(config={'port': 2414, 'role': 'master'}) as devpi:
-            with TestServer(config={'master-url': devpi.server_url, 'port': 2413}) as replica:
-
-                self.assertNotEqual(devpi.server_url, replica.server_url)
+        with SecretFile() as secret_file:
+            with TestServer(config={'port': 2414, 'role': 'master', 'secretfile': secret_file}) as devpi:
+                with TestServer(config={'master-url': devpi.server_url, 'port': 2413, 'secretfile': secret_file}) as replica:
+                    self.assertNotEqual(devpi.server_url, replica.server_url)
 
     def test_remove(self):
         users = {"user": {"password": "secret"}}
