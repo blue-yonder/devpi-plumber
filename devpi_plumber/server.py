@@ -27,6 +27,8 @@ def TestServer(users={}, indices={}, config={}, fail_on_output=['Traceback']):
 
         initialize_serverdir(server_options)
 
+        server_options.pop('no-root-pypi', None)  # This is only relevant for initialisation
+
         with DevpiServer(server_options) as url:
             with DevpiClient(url, 'root', '') as client:
 
