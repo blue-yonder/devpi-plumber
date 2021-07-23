@@ -143,8 +143,8 @@ def initialize_serverdir(server_options):
     """
     def init_serverdir():
         cleaned_options = server_options.copy()
-        del cleaned_options['host']
-        del cleaned_options['port']
+        for option in ('host', 'port', 'secretfile'):
+            cleaned_options.pop(option, None)
         devpi_command('init', **cleaned_options)
 
     serverdir_new = server_options['serverdir']
