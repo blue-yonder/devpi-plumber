@@ -42,7 +42,6 @@ def TestServer(users={}, indices={}, config={}, fail_on_output=['Traceback']):
 
 
 def import_state(serverdir, importdir):
-    devpi_command('init', serverdir=serverdir)
     devpi_command('import', importdir, serverdir=serverdir, **{'no-events': None})
 
 
