@@ -1,7 +1,7 @@
 UNRELEASED
 ----------
 
-- Verify functionality against Devpi 6.
+- Establish compatibility with Devpi Server 6. Compatibility with Devpi Server < 5.2.0 is dropped for this.
 - Add official support for Python 3.7 to 3.9.
 - Drop support for Python 2.7 and 3.5.
 
