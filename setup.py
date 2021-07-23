@@ -25,7 +25,7 @@ setup(
         'twitter.common.contextutil',
     ],
     extras_require={
-        'test': ['devpi-server>=4.2.1'],
+        'test': ['devpi-server>=5.2.0'],
     },
     tests_require=[
         'mock',

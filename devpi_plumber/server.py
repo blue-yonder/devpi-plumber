@@ -42,12 +42,12 @@ def TestServer(users={}, indices={}, config={}, fail_on_output=['Traceback']):
 
 
 def import_state(serverdir, importdir):
-    devpi_server_command(serverdir=serverdir, init=None)
-    devpi_server_command(serverdir=serverdir, **{'import': importdir, 'no-events': None})
+    devpi_command('init', serverdir=serverdir)
+    devpi_command('import', importdir, serverdir=serverdir, **{'no-events': None})
 
 
 def export_state(serverdir, exportdir):
-    devpi_server_command(serverdir=serverdir, export=exportdir)
+    devpi_command('export', exportdir, serverdir=serverdir)
 
 
 def _assert_no_logged_errors(fail_on_output, logfile):
@@ -77,7 +77,7 @@ def DevpiServer(options):
         try:
             try:
                 server = subprocess.Popen(
-                    build_devpi_server_command(**options),
+                    build_devpi_command('server', **options),
                     stderr=subprocess.STDOUT,
                     stdout=stdout,
                     close_fds=True,
@@ -97,14 +97,14 @@ def DevpiServer(options):
                     wait_for_shutdown(server)
 
 
-def build_devpi_server_command(**options):
+def build_devpi_command(command_name, *positionals, **options):
     opts = ['--{}={}'.format(k, v) for k, v in options.items() if v is not None]
     flags = ['--{}'.format(k) for k, v in options.items() if v is None]
-    return ['devpi-server'] + opts + flags
+    return [f'devpi-{command_name}'] + opts + flags + list(positionals)
 
 
-def devpi_server_command(**options):
-    subprocess.check_output(build_devpi_server_command(**options), stderr=subprocess.STDOUT)
+def devpi_command(command_name, *positionals, **options):
+    subprocess.check_output(build_devpi_command(command_name, *positionals, **options), stderr=subprocess.STDOUT)
 
 
 def wait_for_startup(server, url):
@@ -143,7 +143,10 @@ def initialize_serverdir(server_options):
     We can speedup this process by using the content of a cached serverdir.
     """
     def init_serverdir():
-        devpi_server_command(init=None, **server_options)
+        cleaned_options = server_options.copy()
+        del cleaned_options['host']
+        del cleaned_options['port']
+        devpi_command('init', **cleaned_options)
 
     serverdir_new = server_options['serverdir']
 
@@ -157,7 +160,7 @@ def initialize_serverdir(server_options):
         return
 
     if 'master-url' in server_options:
-        # Running as replica. Aways has to be a fresh sync.
+        # Running as replica. Always has to be a fresh sync.
         init_serverdir()
     else:
         # Running as master.
