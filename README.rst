@@ -2,18 +2,12 @@
 Mario the Devpi Plumber
 =======================
 
-.. image:: https://travis-ci.org/blue-yonder/devpi-plumber.svg?branch=master
-    :alt: Build Status
-    :target: https://travis-ci.org/blue-yonder/devpi-plumber 
 .. image:: https://coveralls.io/repos/blue-yonder/devpi-plumber/badge.svg?branch=master
     :alt: Coverage Status
     :target: https://coveralls.io/r/blue-yonder/devpi-plumber?branch=master
 .. image:: https://badge.fury.io/py/devpi-plumber.svg
     :alt: Latest Version
     :target: https://pypi.python.org/pypi/devpi-plumber
-.. image:: https://requires.io/github/blue-yonder/devpi-plumber/requirements.svg?branch=master
-    :alt: Requirements Status
-    :target: https://requires.io/github/blue-yonder/devpi-plumber/requirements/?branch=master
 
 Mario, the devpi-plumber, helps to automate and test large devpi_ installations. It offers a simple python commandline wrapper
 around the devpi client binary and utilities for using devpi in a test harness. To get access to the latter, install Mario
