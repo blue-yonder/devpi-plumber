@@ -1,7 +1,8 @@
 # Requirements definition for pip-compiler
 
 # Runtime dependencies
--e .[test]
+-r core-requirements.txt
+-r extra-test-requirements.txt
 
 # Setup requirements
 setuptools_scm

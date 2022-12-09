@@ -5,6 +5,11 @@ from setuptools import setup, find_packages
 
 with open('README.rst') as f:
     readme = f.read()
+with open('core-requirements.txt') as f:
+    requirements = [line.strip() for line in f.readlines() if line[:1] != '#']
+with open('extra-test-requirements.txt') as f:
+    extra_test_requirements = [line.strip() for line in f.readlines() if line[:1] != '#']
+
 
 setup(
     name='devpi-plumber',
@@ -20,13 +25,9 @@ setup(
     setup_requires=[
         'setuptools_scm',
     ],
-    install_requires=[
-        'devpi-client',
-        'requests',
-        'twitter.common.contextutil',
-    ],
+    install_requires=requirements,
     extras_require={
-        'test': ['devpi-server>=5.2.0'],
+        'test': extra_test_requirements,
     },
     tests_require=[
         'mock',
