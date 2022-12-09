@@ -1,6 +1,7 @@
 Unreleased
 ----------
 
+- Add official support for Python 3.10 and 3.11.
 - Drop support for Python 3.6
 
 0.6.0
