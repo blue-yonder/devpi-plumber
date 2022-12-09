@@ -15,6 +15,7 @@ setup(
     url='https://github.com/blue-yonder/devpi-plumber',
     description='Mario, the devpi-plumber, helps to automate and test large devpi installations.',
     long_description=readme,
+    long_description_content_type='text/x-rst',
     license='new BSD',
     setup_requires=[
         'setuptools_scm',
