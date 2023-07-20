@@ -127,7 +127,7 @@ py==1.11.0
     #   tox
 pycparser==2.21
     # via cffi
-pygments==2.13.0
+pygments==2.15.0
     # via sphinx
 pyparsing==3.0.9
     # via packaging
