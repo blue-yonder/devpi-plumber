@@ -7,6 +7,10 @@ from collections import OrderedDict
 from io import StringIO
 from urllib.parse import urlsplit, urlunsplit, urljoin
 
+# To avoid issues with setuptools and distutils load order, always explicitly load setuptools
+# before loading the Devpi client which relies on it.
+import setuptools  # noqa F401
+
 from devpi.main import main as devpi
 from twitter.common.contextutil import mutable_sys, temporary_dir
 
@@ -133,7 +137,10 @@ class DevpiCommandWrapper(object):
 
     def list(self, *args):
         try:
-            return self._execute('list', *args).splitlines()
+            return [
+                line for line in self._execute('list', *args).splitlines()
+                if not line.startswith("*redirected")
+            ]
         except DevpiClientError as e:
             if '404 Not Found' in str(e):
                 return []
