@@ -36,7 +36,7 @@ charset-normalizer==3.3.0
     # via
     #   aiohttp
     #   requests
-check-manifest==0.49
+check-manifest==0.48
     # via devpi-client
 coverage[toml]==7.3.2
     # via pytest-cov
