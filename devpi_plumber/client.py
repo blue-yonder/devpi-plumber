@@ -133,7 +133,10 @@ class DevpiCommandWrapper(object):
 
     def list(self, *args):
         try:
-            return self._execute('list', *args).splitlines()
+            return [
+                line for line in self._execute('list', *args).splitlines()
+                if not line.startswith("*redirected")
+            ]
         except DevpiClientError as e:
             if '404 Not Found' in str(e):
                 return []
