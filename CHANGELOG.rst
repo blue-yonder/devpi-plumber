@@ -1,7 +1,8 @@
-Unreleased
-----------
+0.7.0
+-----
 
 - Add official support for Python 3.10 and 3.11.
+- Improve compatibility with new Devpi Client and Setuptools releases.
 - Drop support for Python 3.6 and 3.7.
 
 0.6.0
