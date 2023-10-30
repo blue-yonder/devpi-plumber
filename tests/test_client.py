@@ -33,9 +33,9 @@ class ClientTest(TestCase):
         users = {"user": {"password": "secret"}}
 
         with TestServer(users) as devpi:
-            self.assertEquals('root', devpi.user)
+            self.assertEqual('root', devpi.user)
             with devpi.user_session('user', 'secret'):
-                self.assertEquals("user", devpi.user)
+                self.assertEqual("user", devpi.user)
             self.assertIsNone(devpi.user)
 
     def test_devpi_client(self):
@@ -44,22 +44,22 @@ class ClientTest(TestCase):
                 devpi.create_user("user", password="password", email="user@example.com")
                 self.assertEqual(200, requests.get(devpi.server_url + "/user").status_code)
                 self.assertIn("credentials valid", devpi.login("user", "password"))
-                self.assertEquals("user", devpi.user)
+                self.assertEqual("user", devpi.user)
 
     def test_login_success(self):
         users = {"user": {"password": "secret"}}
 
         with TestServer(users) as devpi:
             self.assertIn("credentials valid", devpi.login("user", "secret"))
-            self.assertEquals("user", devpi.user)
+            self.assertEqual("user", devpi.user)
 
     def test_login_error(self):
         users = {"user": {"password": "secret"}}
 
         with TestServer(users) as devpi:
-            with self.assertRaisesRegexp(DevpiClientError, "401 Unauthorized"):
+            with self.assertRaisesRegex(DevpiClientError, "401 Unauthorized"):
                 devpi.login('user', 'wrong password')
-            self.assertEquals('root', devpi.user)
+            self.assertEqual('root', devpi.user)
 
     def test_logoff(self):
         with TestServer() as devpi:
@@ -74,7 +74,7 @@ class ClientTest(TestCase):
     def test_url(self):
         with TestServer() as devpi:
             devpi.use("root/pypi")
-            self.assertEquals(devpi.server_url + "/root/pypi", devpi.url)
+            self.assertEqual(devpi.server_url + "/root/pypi", devpi.url)
 
     def test_create_user(self):
         with TestServer() as devpi:
@@ -132,7 +132,7 @@ class ClientTest(TestCase):
 
         with TestServer(users, indices) as devpi:
             listed = devpi.list_indices()
-            self.assertEquals(2, len(listed))
+            self.assertEqual(2, len(listed))
             self.assertIn('root/pypi', listed)
             self.assertIn('user/index', listed)
 
@@ -220,7 +220,7 @@ class ClientTest(TestCase):
         indices = {"user/index": {}}
 
         with TestServer(users, indices) as devpi:
-            with self.assertRaisesRegexp(DevpiClientError, "not connected to an index"):
+            with self.assertRaisesRegex(DevpiClientError, "not connected to an index"):
                 devpi.list("test_package==0.1")
 
     def test_replica(self):
@@ -253,7 +253,7 @@ class ClientTest(TestCase):
 
             devpi.remove("test_package==0.2")
 
-            self.assertEquals(2, len(devpi.list("test_package==0.1")))
+            self.assertEqual(2, len(devpi.list("test_package==0.1")))
 
     def test_get_json(self):
         users = {"user": {"password": "secret"}}
@@ -261,7 +261,7 @@ class ClientTest(TestCase):
 
         with TestServer(users, indices) as devpi:
             root = devpi.get_json('/')
-            self.assertEquals(root['type'], 'list:userconfig')
+            self.assertEqual(root['type'], 'list:userconfig')
             self.assertIn('root', root['result'])
             self.assertIn('user', root['result'])
 
@@ -269,14 +269,14 @@ class ClientTest(TestCase):
                 devpi.get_json('/foo')
 
             user = devpi.get_json('/user')
-            self.assertEquals(user['type'], 'userconfig')
+            self.assertEqual(user['type'], 'userconfig')
             self.assertIn('index', user['result']['indexes'])
 
             with self.assertRaises(DevpiClientError):
                 devpi.get_json('/user/foo')
 
             index = devpi.get_json('/user/index')
-            self.assertEquals(index['type'], 'indexconfig')
+            self.assertEqual(index['type'], 'indexconfig')
             self.assertListEqual(index['result']['acl_upload'], ['user'])
             self.assertListEqual(index['result']['projects'], [])
 
@@ -293,11 +293,11 @@ class ClientTest(TestCase):
             self.assertListEqual(index['result']['projects'], ['test-package'])
 
             package = devpi.get_json('/user/index/test-package')
-            self.assertEquals(package['type'], 'projectconfig')
+            self.assertEqual(package['type'], 'projectconfig')
             self.assertIn('0.1', package['result'])
 
             version = devpi.get_json('/user/index/test-package/0.1')
-            self.assertEquals(version['type'], 'versiondata')
+            self.assertEqual(version['type'], 'versiondata')
             links = '\n'.join([link['href'] for link in version['result']['+links']])
             self.assertIn('test_package-0.1-py2.py3-none-any.whl', links)
             self.assertIn('test-package-0.1.doc.zip', links)

@@ -181,7 +181,7 @@ class DevpiCommandWrapper(object):
         """
         The user currently logged in or None.
         """
-        match = re.search('logged in as (\w+)', self._execute('use'))
+        match = re.search(r'logged in as (\w+)', self._execute('use'))
         return match.group(1) if match else None
 
 
