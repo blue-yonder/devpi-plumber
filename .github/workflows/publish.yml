@@ -1,4 +1,4 @@
-name: Upload Release ot PyPI
+name: Upload Release to PyPI
 
 on:
   release:
