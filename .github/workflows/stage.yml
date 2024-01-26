@@ -26,7 +26,12 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install build
       - name: Build package
-        run: python -m build
+        run:
+          # Published packages must not have a local version. As we know that we are pushing from the main
+          # branch, the difference from the last tag is already unique anyhow. Thus, we can just skip it.
+          export SETUPTOOLS_SCM_OVERRIDES_FOR_DEVPI_PLUMBER='{ local_scheme = "no-local-version" }'
+          
+          python -m build
       - name: Publish package
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
