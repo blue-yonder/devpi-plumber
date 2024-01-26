@@ -7,6 +7,11 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    environment:
+      name: release
+      url: https://pypi.org/p/devpi-plumber
+    permissions:
+      id-token: write
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python
@@ -21,6 +26,3 @@ jobs:
       run: python -m build
     - name: Publish package
       uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        user: __token__
-        password: ${{ secrets.PYPI_API_TOKEN }}
