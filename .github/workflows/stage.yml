@@ -5,7 +5,7 @@ name: "Publish latest default branch content to TestPyPI"
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   publish-to-stage:
