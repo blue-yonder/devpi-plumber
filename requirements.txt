@@ -137,7 +137,7 @@ python-dateutil==2.9.0.post0
     # via strictyaml
 repoze-lru==0.7
     # via devpi-server
-requests==2.32.3
+requests==2.32.4
     # via
     #   -r core-requirements.txt
     #   devpi-common
