@@ -1,1 +1,2 @@
 devpi-server>=6.19.1
+legacy-cgi  # Python 3.13 no longer ships the cgi module, but devpi-server still needs it. And as we compile dependencies with our oldest supported Python version, it is not picked up automatically.
