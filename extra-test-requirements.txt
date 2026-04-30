@@ -1,1 +1,1 @@
-devpi-server>=5.2.0
+devpi-server>=6.19.1
