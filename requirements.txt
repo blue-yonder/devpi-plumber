@@ -83,6 +83,8 @@ lazy==1.6
     # via
     #   devpi-common
     #   devpi-server
+legacy-cgi==2.6.4
+    # via -r extra-test-requirements.txt
 markupsafe==3.0.2
     # via jinja2
 mock==5.2.0
