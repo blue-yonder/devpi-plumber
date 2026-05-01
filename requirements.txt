@@ -123,7 +123,7 @@ py==1.11.0
     # via devpi-server
 pycparser==2.22
     # via cffi
-pygments==2.19.1
+pygments==2.20.0
     # via sphinx
 pyproject-hooks==1.2.0
     # via build
@@ -149,14 +149,6 @@ ruamel-yaml==0.18.10
     # via devpi-server
 ruamel-yaml-clib==0.2.12
     # via ruamel-yaml
-setuptools==81.0.0
-    # via
-    #   check-manifest
-    #   devpi-server
-    #   pyramid
-    #   setuptools-scm
-    #   zope-deprecation
-    #   zope-interface
 setuptools-scm==8.3.1
     # via -r requirements.in
 six==1.17.0
