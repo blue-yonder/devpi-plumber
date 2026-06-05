@@ -149,6 +149,14 @@ ruamel-yaml==0.18.10
     # via devpi-server
 ruamel-yaml-clib==0.2.12
     # via ruamel-yaml
+setuptools==81.0.0
+    # via
+    #   check-manifest
+    #   devpi-server
+    #   pyramid
+    #   setuptools-scm
+    #   zope-deprecation
+    #   zope-interface
 setuptools-scm==8.3.1
     # via -r requirements.in
 six==1.17.0
@@ -202,7 +210,7 @@ venusian==3.1.1
     # via pyramid
 waitress==3.0.2
     # via devpi-server
-webob==1.8.9
+webob==1.8.10
     # via pyramid
 zipp==3.21.0
     # via importlib-metadata
