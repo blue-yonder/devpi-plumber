@@ -2,6 +2,7 @@ Unreleased
 ----------
 
 - Add official support for Python 3.12 and 3.13.
+- Drop support for Python 3.9.
 - Drop support for Python 3.8.
 
 0.7.0
