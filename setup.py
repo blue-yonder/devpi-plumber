@@ -22,6 +22,7 @@ setup(
     long_description=readme,
     long_description_content_type='text/x-rst',
     license='new BSD',
+    python_requires='>=3.10',
     setup_requires=[
         'setuptools_scm',
     ],
@@ -42,10 +43,10 @@ setup(
         'License :: OSI Approved :: BSD License',
         'Topic :: System :: Archiving :: Packaging',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: 3.12',
         'Programming Language :: Python :: 3.13',
+        'Programming Language :: Python :: 3.14',
     ],
 )
