@@ -9,5 +9,6 @@ venv*/
 build
 tests/fixture/package/dist
 dist/
+tox/
 
 README.html
