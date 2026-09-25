@@ -6,7 +6,7 @@
 #
 alabaster==1.0.0
     # via sphinx
-anyio==4.14.1
+anyio==4.14.2
     # via httpx
 argon2-cffi==25.1.0
     # via
