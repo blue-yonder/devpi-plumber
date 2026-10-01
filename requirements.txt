@@ -202,7 +202,7 @@ typing-extensions==4.15.0
     #   exceptiongroup
     #   setuptools-scm
     #   vcs-versioning
-urllib3==2.7.0
+urllib3==2.8.0
     # via requests
 vcs-versioning==2.2.2
     # via setuptools-scm
