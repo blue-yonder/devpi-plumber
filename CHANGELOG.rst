@@ -5,6 +5,7 @@ Unreleased
 - Add official support for Python 3.12, 3.13 and 3.14.
 - Drop support for Python 3.9.
 - Drop support for Python 3.8.
+- Remove the deprecated universal-wheel setting from project and test-fixture packaging.
 
 0.7.0
 -----
