@@ -94,7 +94,7 @@ passlib==1.7.4
     # via devpi-server
 pastedeploy==3.1.0
     # via plaster-pastedeploy
-pkginfo==1.13
+pkginfo==1.13.1
     # via devpi-client
 plaster==1.1.2
     # via
@@ -102,11 +102,11 @@ plaster==1.1.2
     #   pyramid
 plaster-pastedeploy==1.0.1
     # via pyramid
-platformdirs==4.12.4
+platformdirs==4.13.3
     # via
     #   devpi-client
     #   devpi-server
-pluggy==1.6.0
+pluggy==1.7.0
     # via
     #   devpi-client
     #   devpi-server
@@ -114,7 +114,7 @@ pluggy==1.6.0
     #   pytest-cov
 py==1.11.0
     # via devpi-server
-pycparser==3.1
+pycparser==3.11
     # via cffi
 pygments==2.21.0
     # via
@@ -196,5 +196,5 @@ webob==1.8.11
     # via pyramid
 zope-deprecation==6.0
     # via pyramid
-zope-interface==8.6
+zope-interface==8.7
     # via pyramid
