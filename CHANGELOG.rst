@@ -1,14 +1,9 @@
-Unreleased
-----------
-
-Added
-^^^^^
+0.7.1
+-----
 
 - Compatibility has been verified with Python 3.12, 3.13, 3.14 and 3.15.
-- Drop support for Python 3.10.
-- Drop support for Python 3.9.
-- Drop support for Python 3.8.
-- Remove the deprecated universal-wheel setting from project and test-fixture packaging.
+- Stopped verifying compatibility with Python 3.8, 3.9, and 3.10.
+- Remove the deprecated universal-wheel setting from project and test-fixture packaging as Python 2 is no longer supported since 0.6.0.
 
 0.7.0
 -----
