@@ -13,7 +13,7 @@ with open('extra-test-requirements.txt') as f:
 
 setup(
     name='devpi-plumber',
-    use_scm_version=True,
+    use_scm_version={'write_to_source': False},
     packages=find_packages(exclude=['tests']),
     author='Stephan Erb',
     author_email='stephan.erb@blue-yonder.com',
@@ -21,7 +21,7 @@ setup(
     description='Mario, the devpi-plumber, helps to automate and test large devpi installations.',
     long_description=readme,
     long_description_content_type='text/x-rst',
-    license='new BSD',
+    license='BSD-3-Clause',
     python_requires='>=3.11',
     setup_requires=[
         'setuptools_scm',
@@ -30,17 +30,11 @@ setup(
     extras_require={
         'test': extra_test_requirements,
     },
-    tests_require=[
-        'mock',
-        'pytest',
-        'pytest-cov',
-    ],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Console',
         'Intended Audience :: Developers',
         'Intended Audience :: System Administrators',
-        'License :: OSI Approved :: BSD License',
         'Topic :: System :: Archiving :: Packaging',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.11',
