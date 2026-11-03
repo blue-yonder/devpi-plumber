@@ -44,7 +44,7 @@ devpi-common==4.1.1
     #   devpi-client
     #   devpi-server
 devpi-server==6.20.3
-    # via -r extra-test-requirements.txt
+    # via -r extra-test-requirements.in
 docutils==0.22.4
     # via sphinx
 h11==0.16.0
@@ -75,7 +75,7 @@ lazy==2.0
     #   devpi-common
     #   devpi-server
 legacy-cgi==2.6.4
-    # via -r extra-test-requirements.txt
+    # via -r extra-test-requirements.in
 markupsafe==3.0.4
     # via jinja2
 mock==5.2.0
