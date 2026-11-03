@@ -38,7 +38,7 @@ coverage==7.16.2
 defusedxml==0.7.1
     # via devpi-server
 devpi-client==7.3.0
-    # via -r core-requirements.txt
+    # via -r core-requirements.in
 devpi-common==4.1.1
     # via
     #   devpi-client
@@ -136,7 +136,7 @@ repoze-lru==0.8
     # via devpi-server
 requests==2.34.2
     # via
-    #   -r core-requirements.txt
+    #   -r core-requirements.in
     #   devpi-client
     #   devpi-common
     #   devpi-server
@@ -177,7 +177,7 @@ strictyaml==1.7.3
 translationstring==1.4
     # via pyramid
 twitter-common-contextutil==0.3.11
-    # via -r core-requirements.txt
+    # via -r core-requirements.in
 twitter-common-dirutil==0.3.11
     # via twitter-common-contextutil
 twitter-common-lang==0.3.11
