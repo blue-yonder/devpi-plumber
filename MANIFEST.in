@@ -1,1 +1,1 @@
-include README.rst COPYING core-requirements.txt extra-test-requirements.txt
+include README.rst COPYING core-requirements.in extra-test-requirements.txt

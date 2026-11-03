@@ -1,7 +1,7 @@
 # Requirements definition for pip-compiler
 
 # Runtime dependencies
--r core-requirements.txt
+-r core-requirements.in
 -r extra-test-requirements.txt
 
 # Setup requirements

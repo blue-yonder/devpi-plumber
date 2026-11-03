@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 with open('README.rst') as f:
     readme = f.read()
-with open('core-requirements.txt') as f:
+with open('core-requirements.in') as f:
     requirements = [line.strip() for line in f.readlines() if line[:1] != '#']
 with open('extra-test-requirements.txt') as f:
     extra_test_requirements = [line.strip() for line in f.readlines() if line[:1] != '#']
