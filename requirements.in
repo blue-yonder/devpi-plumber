@@ -2,7 +2,7 @@
 
 # Runtime dependencies
 -r core-requirements.in
--r extra-test-requirements.txt
+-r extra-test-requirements.in
 
 # Setup requirements
 setuptools_scm
